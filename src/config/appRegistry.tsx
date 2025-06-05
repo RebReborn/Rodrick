@@ -1,5 +1,5 @@
 import type React from 'react';
-import { LayoutGrid, User, Mail, FileText, Camera, Package, Zap, BarChart3, Brain, Palette, Server, ShieldAlert } from 'lucide-react';
+import { LayoutGrid, User, Mail, FileText, Camera, Package, Zap, BarChart3, Brain, Palette, Server, ShieldAlert, Settings, Code } from 'lucide-react';
 import type { AppDefinition } from '@/types';
 
 // Placeholders for App Components - These will be created next
@@ -76,9 +76,9 @@ export const appRegistry: AppDefinition[] = [
   },
   // Example of other apps that could be added to Start Menu but not pinned/desktop
   {
-    key: 'settings',
+    key: 'settingsApp', // Changed key to avoid conflict with lucide-react Settings icon
     name: 'Settings',
-    icon: <Package />, // Using Package as a placeholder for Settings icon from lucide
+    icon: <Settings />, // Using Settings icon from lucide-react
     defaultSize: { width: 500, height: 400 },
     minSize: { width: 300, height: 200 },
     component: (props) => <PlaceholderAppComponent {...props} />,
