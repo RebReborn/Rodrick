@@ -10,7 +10,8 @@ import ContactApp from '@/components/apps/ContactApp';
 import ResumeApp from '@/components/apps/ResumeApp';
 import PhotographyApp from '@/components/apps/PhotographyApp';
 import FutureProjectsApp from '@/components/apps/FutureProjectsApp';
-import TerminalApp from '@/components/apps/TerminalApp'; // Import the new TerminalApp
+import TerminalApp from '@/components/apps/TerminalApp';
+import SettingsApp from '@/components/apps/SettingsApp'; // Import the new SettingsApp
 
 // Placeholder for other apps not yet fully implemented
 const PlaceholderAppComponent = ({ windowId, appKey }: { windowId: string, appKey: string }) => (
@@ -99,9 +100,9 @@ export const appRegistry: AppDefinition[] = [
     key: 'settingsApp', 
     name: 'Settings',
     icon: <Settings />, 
-    defaultSize: { width: 500, height: 400 },
-    minSize: { width: 300, height: 200 },
-    component: (props) => <PlaceholderAppComponent {...props} />,
+    defaultSize: { width: 750, height: 550 }, // Adjusted size
+    minSize: { width: 500, height: 400 }, // Adjusted minSize
+    component: SettingsApp, // Use the new SettingsApp
   },
    {
     key: 'mobileDev',
@@ -154,3 +155,4 @@ export const appRegistry: AppDefinition[] = [
   },
 ];
 
+    
