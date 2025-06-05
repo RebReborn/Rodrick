@@ -1,3 +1,4 @@
+
 import type React from 'react';
 import { Folder, User, Mail, FileText, Camera, Smartphone, Gamepad2, Zap, BarChart3, Brain, Palette, Server, ShieldAlert, Settings, Code } from 'lucide-react';
 import type { AppDefinition } from '@/types';
@@ -5,7 +6,7 @@ import type { AppDefinition } from '@/types';
 // Placeholders for App Components - These will be created next
 const PlaceholderAppComponent = ({ windowId, appKey }: { windowId: string, appKey: string }) => (
   <div className="p-4 h-full flex flex-col items-center justify-center bg-background">
-    <h2 className="text-2xl font-semibold mb-2">{appKey}</h2>
+    <h2 className="text-2xl font-semibold mb-2">{appKey.charAt(0).toUpperCase() + appKey.slice(1)}</h2>
     <p className="text-muted-foreground">Content for {appKey} (Window ID: {windowId})</p>
     <p className="text-xs mt-4">Component: <code>src/components/apps/{appKey.charAt(0).toUpperCase() + appKey.slice(1)}App.tsx</code></p>
   </div>
@@ -74,6 +75,15 @@ export const appRegistry: AppDefinition[] = [
     isResizable: true,
     component: FutureProjectsApp,
   },
+  {
+    key: 'terminal',
+    name: 'Terminal',
+    icon: <Code />,
+    defaultSize: { width: 600, height: 400 },
+    minSize: { width: 300, height: 250 },
+    isResizable: true,
+    component: (props) => <PlaceholderAppComponent {...props} />,
+  },
   // Example of other apps that could be added to Start Menu but not pinned/desktop
   {
     key: 'settingsApp', // Changed key to avoid conflict with lucide-react Settings icon
@@ -83,54 +93,54 @@ export const appRegistry: AppDefinition[] = [
     minSize: { width: 300, height: 200 },
     component: (props) => <PlaceholderAppComponent {...props} />,
   },
-  {
-    key: 'terminal',
-    name: 'Terminal',
-    icon: <Code />,
-    defaultSize: { width: 600, height: 400 },
-    component: (props) => <PlaceholderAppComponent {...props} />,
-  },
   // Future project categories can also be represented here if they were to launch mini-apps
    {
     key: 'mobileDev',
     name: 'Mobile Apps',
-    icon: <Smartphone />, 
+    icon: <Smartphone />,
+    defaultSize: { width: 400, height: 600},
     component: (props) => <PlaceholderAppComponent {...props} />,
   },
   {
     key: 'gameDev',
     name: 'Game Dev',
-    icon: <Gamepad2 />, 
+    icon: <Gamepad2 />,
+    defaultSize: { width: 600, height: 400},
     component: (props) => <PlaceholderAppComponent {...props} />,
   },
   {
     key: 'dataViz',
     name: 'Data Viz',
     icon: <BarChart3 />,
+    defaultSize: { width: 700, height: 500},
     component: (props) => <PlaceholderAppComponent {...props} />,
   },
   {
     key: 'aiProjects',
     name: 'AI Projects',
     icon: <Brain />,
+    defaultSize: { width: 600, height: 500},
     component: (props) => <PlaceholderAppComponent {...props} />,
   },
   {
     key: 'designWork',
     name: 'Design Work',
     icon: <Palette />,
+    defaultSize: { width: 800, height: 600},
     component: (props) => <PlaceholderAppComponent {...props} />,
   },
   {
     key: 'backendApi',
     name: 'Backend APIs',
     icon: <Server />,
+    defaultSize: { width: 500, height: 400},
     component: (props) => <PlaceholderAppComponent {...props} />,
   },
   {
     key: 'securityTools',
     name: 'Security Tools',
     icon: <ShieldAlert />,
+    defaultSize: { width: 600, height: 450},
     component: (props) => <PlaceholderAppComponent {...props} />,
   },
 ];
