@@ -13,7 +13,7 @@ const Desktop: React.FC = () => {
   const { windows } = useWindowManager();
 
   const desktopApps = appRegistry.filter(app => 
-    ['projects', 'about', 'resume', 'photography', 'contact', 'terminal', 'futureProjects'].includes(app.key) // Added futureProjects
+    ['projects', 'about', 'resume', 'photography', 'contact', 'terminal', 'futureProjects'].includes(app.key)
   );
 
   return (
@@ -35,7 +35,7 @@ const Desktop: React.FC = () => {
 
       {/* Desktop Icons */}
       {/* Switched to grid layout as per user CSS: grid-template-columns: repeat(auto-fill, 100px); grid-auto-rows: 120px; gap: 20px; */}
-      <div className="absolute top-0 left-0 p-5 z-10 grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] auto-rows-[120px] gap-5 content-start h-[calc(100vh-48px)]">
+      <div className="absolute top-0 left-0 p-5 z-10 grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] auto-rows-[120px] gap-5 content-start h-[calc(100vh-48px)] overflow-y-auto">
         {desktopApps.map((app) => (
           <DesktopIcon 
             key={app.key} 
