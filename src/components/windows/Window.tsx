@@ -215,7 +215,7 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
         'acrylic-blur acrylic-light dark:acrylic-dark', // Applies backdrop blur and slight tint
         isAppActive ? 'border-primary ring-1 ring-primary' : 'border-black/10 dark:border-white/10',
         instance.isMaximized ? '!rounded-none' : '', // Important to override rounded-lg
-        isOpen ? 'animate-window-open' : 'animate-window-close' // Conditional open/close animation
+        'animate-window-open' // Always apply open animation as component presence means it's open
       )}
       onClick={() => {if (!isAppActive) bringToFront(instance.id)}}
       onMouseDownCapture={() => {if (!isAppActive) bringToFront(instance.id)}} // Use onMouseDownCapture for earlier focus
