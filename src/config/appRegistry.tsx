@@ -3,7 +3,16 @@ import type React from 'react';
 import { Folder, User, Mail, FileText, Camera, Smartphone, Gamepad2, Zap, BarChart3, Brain, Palette, Server, ShieldAlert, Settings, Code } from 'lucide-react';
 import type { AppDefinition } from '@/types';
 
-// Placeholders for App Components - These will be created next
+// Import actual app components
+import ProjectsApp from '@/components/apps/ProjectsApp';
+import AboutApp from '@/components/apps/AboutApp';
+import ContactApp from '@/components/apps/ContactApp';
+import ResumeApp from '@/components/apps/ResumeApp';
+import PhotographyApp from '@/components/apps/PhotographyApp';
+import FutureProjectsApp from '@/components/apps/FutureProjectsApp';
+import TerminalApp from '@/components/apps/TerminalApp'; // Import the new TerminalApp
+
+// Placeholder for other apps not yet fully implemented
 const PlaceholderAppComponent = ({ windowId, appKey }: { windowId: string, appKey: string }) => (
   <div className="p-4 h-full flex flex-col items-center justify-center bg-background">
     <h2 className="text-2xl font-semibold mb-2">{appKey.charAt(0).toUpperCase() + appKey.slice(1)}</h2>
@@ -12,13 +21,6 @@ const PlaceholderAppComponent = ({ windowId, appKey }: { windowId: string, appKe
   </div>
 );
 
-// Import actual app components once created
-import ProjectsApp from '@/components/apps/ProjectsApp';
-import AboutApp from '@/components/apps/AboutApp';
-import ContactApp from '@/components/apps/ContactApp';
-import ResumeApp from '@/components/apps/ResumeApp';
-import PhotographyApp from '@/components/apps/PhotographyApp';
-import FutureProjectsApp from '@/components/apps/FutureProjectsApp';
 
 export const appRegistry: AppDefinition[] = [
   {
@@ -69,7 +71,7 @@ export const appRegistry: AppDefinition[] = [
   {
     key: 'futureProjects',
     name: 'Future Projects',
-    icon: <Zap />, // Zap or Lightbulb might be good
+    icon: <Zap />, 
     defaultSize: { width: 750, height: 550 },
     minSize: { width: 450, height: 350 },
     isResizable: true,
@@ -80,20 +82,18 @@ export const appRegistry: AppDefinition[] = [
     name: 'Terminal',
     icon: <Code />,
     defaultSize: { width: 600, height: 400 },
-    minSize: { width: 300, height: 250 },
+    minSize: { width: 400, height: 300 }, // Slightly increased min size for better usability
     isResizable: true,
-    component: (props) => <PlaceholderAppComponent {...props} />,
+    component: TerminalApp, // Use the new TerminalApp
   },
-  // Example of other apps that could be added to Start Menu but not pinned/desktop
   {
-    key: 'settingsApp', // Changed key to avoid conflict with lucide-react Settings icon
+    key: 'settingsApp', 
     name: 'Settings',
-    icon: <Settings />, // Using Settings icon from lucide-react
+    icon: <Settings />, 
     defaultSize: { width: 500, height: 400 },
     minSize: { width: 300, height: 200 },
     component: (props) => <PlaceholderAppComponent {...props} />,
   },
-  // Future project categories can also be represented here if they were to launch mini-apps
    {
     key: 'mobileDev',
     name: 'Mobile Apps',
@@ -116,8 +116,8 @@ export const appRegistry: AppDefinition[] = [
     component: (props) => <PlaceholderAppComponent {...props} />,
   },
   {
-    key: 'aiProjects',
-    name: 'AI Projects',
+    key: 'aiProjectsAppDef', // Renamed to avoid confusion with FutureProjectsApp which is AI-powered
+    name: 'AI Sandbox', // Changed name for clarity
     icon: <Brain />,
     defaultSize: { width: 600, height: 500},
     component: (props) => <PlaceholderAppComponent {...props} />,
