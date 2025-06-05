@@ -1,3 +1,4 @@
+
 "use client";
 
 import type React from 'react';
@@ -26,6 +27,7 @@ const WindowManagerContext = createContext<WindowManagerContextType | undefined>
 
 const INITIAL_Z_INDEX = 10;
 const Z_INDEX_INCREMENT = 1;
+const TASKBAR_HEIGHT = 48;
 
 export const WindowManagerProvider = ({ children }: { children: ReactNode }) => {
   const [windows, setWindows] = useState<WindowInstance[]>([]);
@@ -82,7 +84,6 @@ export const WindowManagerProvider = ({ children }: { children: ReactNode }) => 
       return;
     }
 
-
     const newWindowId = `${appKey}-${Date.now()}`;
     const newZ = nextZIndex;
     setNextZIndex(prev => prev + Z_INDEX_INCREMENT);
@@ -90,18 +91,31 @@ export const WindowManagerProvider = ({ children }: { children: ReactNode }) => 
     const defaultWidth = appDef.defaultSize?.width || 600;
     const defaultHeight = appDef.defaultSize?.height || 400;
 
+    const maxAllowedHeight = window.innerHeight - TASKBAR_HEIGHT;
+    const maxAllowedWidth = window.innerWidth;
+
+    const effectiveHeight = Math.min(additionalProps?.height ?? defaultHeight, maxAllowedHeight);
+    const effectiveWidth = Math.min(additionalProps?.width ?? defaultWidth, maxAllowedWidth);
+    
+    const calculatedY = additionalProps?.y ?? Math.max(0, (window.innerHeight / 2) - (effectiveHeight / 2) - 50 + (windows.length % 5) * 20);
+    const finalY = Math.max(0, Math.min(calculatedY, maxAllowedHeight - effectiveHeight));
+
+    const calculatedX = additionalProps?.x ?? Math.max(0, (window.innerWidth / 2) - (effectiveWidth / 2) + (windows.length % 5) * 20);
+    const finalX = Math.max(0, Math.min(calculatedX, maxAllowedWidth - effectiveWidth));
+
+
     const newWindow: WindowInstance = {
       id: newWindowId,
       appKey,
       title: appDef.name,
       icon: appDef.icon,
       content: <appDef.component windowId={newWindowId} appKey={appKey} />,
-      x: additionalProps?.x ?? Math.max(0, (window.innerWidth / 2) - (defaultWidth / 2) + (windows.length % 5) * 20),
-      y: additionalProps?.y ?? Math.max(0, (window.innerHeight / 2) - (defaultHeight / 2) - 50 + (windows.length % 5) * 20),
-      width: additionalProps?.width ?? defaultWidth,
-      height: additionalProps?.height ?? defaultHeight,
-      minWidth: appDef.minSize?.width || 300,
-      minHeight: appDef.minSize?.height || 200,
+      x: finalX,
+      y: finalY,
+      width: effectiveWidth,
+      height: effectiveHeight,
+      minWidth: Math.min(appDef.minSize?.width || 300, maxAllowedWidth),
+      minHeight: Math.min(appDef.minSize?.height || 200, maxAllowedHeight),
       zIndex: newZ,
       isMinimized: false,
       isMaximized: false,
@@ -230,3 +244,4 @@ export const useWindowManager = () => {
   }
   return context;
 };
+

@@ -1,7 +1,7 @@
 
 "use client";
 
-import React from 'react'; // Changed from 'import type React'
+import React from 'react'; 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { X, Minus, Maximize2, Minimize2 } from 'lucide-react';
 import { useWindowManager } from '@/contexts/WindowManagerContext';
@@ -13,12 +13,14 @@ interface WindowProps {
   instance: WindowInstance;
 }
 
+const TASKBAR_HEIGHT = 48; // Define taskbar height as a constant
+
 const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
   const {
     closeWindow,
     minimizeWindow,
     toggleMaximizeWindow,
-    focusWindow,
+    // focusWindow, // Not directly used for focus triggering here, but for context
     updateWindowPosition,
     updateWindowSize,
     setDraggingState,
@@ -46,20 +48,16 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
   }, [instance.id, instance.isFocusedOnMount, bringToFront]);
   
   const handleMouseDownOnTitleBar = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Check if the click target is one of the control buttons
     const targetElement = e.target as HTMLElement;
-    if (targetElement.closest('button[aria-label]')) { // Assumes control buttons have aria-labels
-        return; // Do not initiate drag if a control button was clicked
+    if (targetElement.closest('button[aria-label]')) { 
+        return; 
     }
 
-    if (instance.isMaximized && e.detail === 2) { // Double click to unmaximize
+    if (instance.isMaximized && e.detail === 2) { 
       toggleMaximizeWindow(instance.id);
-      // Optionally, position the window under the cursor after unmaximizing
-      // This is complex and involves calculating new X/Y based on cursor and original size.
-      // For now, it will revert to its last non-maximized position.
       return;
     }
-    if (instance.isMaximized) return; // Don't drag if maximized (single click)
+    if (instance.isMaximized) return; 
 
 
     setDraggingState(instance.id, true);
@@ -75,6 +73,7 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
     setResizingState(instance.id, true);
     setInitialResizePos({ x: e.clientX, y: e.clientY });
     setInitialWindowSize({ width: instance.width, height: instance.height });
+    setInitialWindowPos({ x: instance.x, y: instance.y }); // Store initial position for resize calculations
     setResizeDirection(direction);
     bringToFront(instance.id);
     e.preventDefault();
@@ -86,49 +85,63 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
       const dx = e.clientX - initialDragPos.x;
       const dy = e.clientY - initialDragPos.y;
       
-      // Prevent dragging outside viewport, considering taskbar height (48px)
+      const maxTopY = window.innerHeight - TASKBAR_HEIGHT - instance.height;
       const newX = Math.max(0, Math.min(initialWindowPos.x + dx, window.innerWidth - instance.width));
-      const newY = Math.max(0, Math.min(initialWindowPos.y + dy, window.innerHeight - 48 - 32)); // 32 for title bar
+      const newY = Math.max(0, Math.min(initialWindowPos.y + dy, maxTopY));
       updateWindowPosition(instance.id, newX, newY);
 
-    } else if (instance.isResizing && initialResizePos && initialWindowSize && resizeDirection) {
-        const dx = e.clientX - initialResizePos.x;
-        const dy = e.clientY - initialResizePos.y;
+    } else if (instance.isResizing && initialResizePos && initialWindowSize && resizeDirection && initialWindowPos) {
+        let dx = e.clientX - initialResizePos.x;
+        let dy = e.clientY - initialResizePos.y;
 
         let newWidth = initialWindowSize.width;
         let newHeight = initialWindowSize.height;
-        let newX = instance.x;
-        let newY = instance.y;
+        let newX = initialWindowPos.x;
+        let newY = initialWindowPos.y;
 
         const minWidth = instance.minWidth || 200;
         const minHeight = instance.minHeight || 150;
 
-        if (resizeDirection.includes("right")) newWidth = Math.max(minWidth, initialWindowSize.width + dx);
-        if (resizeDirection.includes("bottom")) newHeight = Math.max(minHeight, initialWindowSize.height + dy);
-        
+        if (resizeDirection.includes("right")) {
+            newWidth = Math.max(minWidth, initialWindowSize.width + dx);
+            newWidth = Math.min(newWidth, window.innerWidth - newX); // Cap by screen edge
+        }
         if (resizeDirection.includes("left")) {
-            const proposedWidth = initialWindowSize.width - dx;
-            if (proposedWidth >= minWidth) {
-                newWidth = proposedWidth;
-                newX = initialWindowPos ? initialWindowPos.x + dx : instance.x + dx; // Use initialWindowPos if available
-            } else {
+            const potentialWidth = initialWindowSize.width - dx;
+            if (potentialWidth < minWidth) {
                 newWidth = minWidth;
-                newX = initialWindowPos ? initialWindowPos.x + (initialWindowSize.width - minWidth) : instance.x + (initialWindowSize.width - minWidth);
+                newX = initialWindowPos.x + (initialWindowSize.width - minWidth);
+            } else {
+                newWidth = potentialWidth;
+                newX = initialWindowPos.x + dx;
+            }
+            if (newX < 0) { // If moving left made x negative
+                newWidth = Math.max(minWidth, newWidth + newX); // Correct width, newX is negative
+                newX = 0;
             }
         }
+
+        if (resizeDirection.includes("bottom")) {
+            newHeight = Math.max(minHeight, initialWindowSize.height + dy);
+            newHeight = Math.min(newHeight, window.innerHeight - TASKBAR_HEIGHT - newY); // Cap by taskbar
+        }
         if (resizeDirection.includes("top")) {
-            const proposedHeight = initialWindowSize.height - dy;
-            if (proposedHeight >= minHeight) {
-                newHeight = proposedHeight;
-                newY = initialWindowPos ? initialWindowPos.y + dy : instance.y + dy;
-            } else {
+            const potentialHeight = initialWindowSize.height - dy;
+            if (potentialHeight < minHeight) {
                 newHeight = minHeight;
-                newY = initialWindowPos ? initialWindowPos.y + (initialWindowSize.height - minHeight) : instance.y + (initialWindowSize.height - minHeight);
+                newY = initialWindowPos.y + (initialWindowSize.height - minHeight);
+            } else {
+                newHeight = potentialHeight;
+                newY = initialWindowPos.y + dy;
+            }
+             if (newY < 0) { // If moving top made y negative
+                newHeight = Math.max(minHeight, newHeight + newY); // Correct height, newY is negative
+                newY = 0;
             }
         }
         
         updateWindowSize(instance.id, newWidth, newHeight);
-        if (newX !== instance.x || newY !== instance.y) {
+        if (newX !== initialWindowPos.x || newY !== initialWindowPos.y) {
           updateWindowPosition(instance.id, newX, newY);
         }
     }
@@ -144,6 +157,7 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
       setResizingState(instance.id, false);
       setInitialResizePos(null);
       setInitialWindowSize(null);
+      setInitialWindowPos(null);
       setResizeDirection(null);
     }
   }, [instance.id, instance.isDragging, instance.isResizing, setDraggingState, setResizingState]);
@@ -170,8 +184,8 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
     position: 'absolute',
     top: 0,
     left: 0,
-    width: '100vw', // Maximized fills screen width
-    height: 'calc(100vh - 48px)', // Account for 48px taskbar
+    width: '100vw', 
+    height: `calc(100vh - ${TASKBAR_HEIGHT}px)`, 
     zIndex: instance.zIndex,
     transition: 'width 0.2s ease-out, height 0.2s ease-out, top 0.2s ease-out, left 0.2s ease-out',
   } : {
@@ -183,42 +197,35 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
     zIndex: instance.zIndex,
     minWidth: instance.minWidth,
     minHeight: instance.minHeight,
-    // User CSS: transition: none during drag/resize, else opacity/transform 0.2s
     transition: instance.isDragging || instance.isResizing ? 'none' : 'opacity 0.2s ease-out, transform 0.2s ease-out, width 0.2s ease-out, height 0.2s ease-out, top 0.2s ease-out, left 0.2s ease-out',
   };
 
   const resizeHandleClasses = "absolute bg-transparent z-10";
   const resizeHandles = [
-    // Corners (larger hit area)
     { direction: "top-left", className: "cursor-nwse-resize top-0 left-0 w-3 h-3 -m-1" },
     { direction: "top-right", className: "cursor-nesw-resize top-0 right-0 w-3 h-3 -m-1" },
     { direction: "bottom-left", className: "cursor-nesw-resize bottom-0 left-0 w-3 h-3 -m-1" },
     { direction: "bottom-right", className: "cursor-nwse-resize bottom-0 right-0 w-3 h-3 -m-1" },
-    // Edges (thinner hit area but covers full edge)
     { direction: "top", className: "cursor-ns-resize top-0 left-1/2 -translate-x-1/2 w-[calc(100%-16px)] h-2 -my-1" },
     { direction: "left", className: "cursor-ew-resize top-1/2 -translate-y-1/2 left-0 w-2 h-[calc(100%-16px)] -mx-1" },
     { direction: "right", className: "cursor-ew-resize top-1/2 -translate-y-1/2 right-0 w-2 h-[calc(100%-16px)] -mx-1" },
     { direction: "bottom", className: "cursor-ns-resize bottom-0 left-1/2 -translate-x-1/2 w-[calc(100%-16px)] h-2 -my-1" },
   ];
   
-  // User CSS: background-color: rgba(32, 32, 32, 0.9); backdrop-filter: blur(20px); border-radius: 8px; box-shadow: var(--shadow)
-  // For dark theme, this translates to dark:bg-neutral-800/90, acrylic-blur dark:acrylic-dark, rounded-lg, shadow-window
-  // Header User CSS: background-color: rgba(255, 255, 255, 0.05);
-  // This translates to bg-white/5 (or black/5 in dark mode if title bar is always darkish)
   return (
     <div
       ref={windowRef}
       style={windowStyle}
       className={cn(
         'flex flex-col rounded-lg shadow-window overflow-hidden border',
-        'dark:bg-neutral-800/90 bg-neutral-100/90', // Base window color
-        'acrylic-blur acrylic-light dark:acrylic-dark', // Applies backdrop blur and slight tint
+        'dark:bg-neutral-800/90 bg-neutral-100/90', 
+        'acrylic-blur acrylic-light dark:acrylic-dark', 
         isAppActive ? 'border-primary ring-1 ring-primary' : 'border-black/10 dark:border-white/10',
-        instance.isMaximized ? '!rounded-none' : '', // Important to override rounded-lg
-        'animate-window-open' // Always apply open animation as component presence means it's open
+        instance.isMaximized ? '!rounded-none' : '', 
+        'animate-window-open' 
       )}
       onClick={() => {if (!isAppActive) bringToFront(instance.id)}}
-      onMouseDownCapture={() => {if (!isAppActive) bringToFront(instance.id)}} // Use onMouseDownCapture for earlier focus
+      onMouseDownCapture={() => {if (!isAppActive) bringToFront(instance.id)}} 
     >
       <div
         ref={titleBarRef}
@@ -226,10 +233,9 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
         onDoubleClick={() => toggleMaximizeWindow(instance.id)}
         className={cn(
           'h-8 px-2 flex items-center justify-between select-none shrink-0',
-          'bg-white/5 dark:bg-black/10', // Title bar color from user CSS (rgba(255,255,255,0.05))
-          // Removed acrylic from title bar for a flatter look as per some Win11 styles, can be re-added if preferred
+          'bg-white/5 dark:bg-black/10', 
           instance.isMaximized ? '' : 'cursor-grab',
-          isAppActive ? 'opacity-100' : 'opacity-90' // Subtle active state for title bar
+          isAppActive ? 'opacity-100' : 'opacity-90' 
         )}
       >
         <div className="flex items-center gap-2 truncate">
@@ -248,7 +254,7 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
           </Button>
         </div>
       </div>
-      <div className="flex-grow overflow-auto relative bg-background p-[15px]"> {/* User CSS: padding: 15px */}
+      <div className="flex-grow overflow-auto relative bg-background p-[15px]"> 
         {instance.content}
       </div>
       {!instance.isMaximized && resizeHandles.map(handle => (
@@ -263,5 +269,4 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
 };
 
 export default WindowComponent;
-
 
