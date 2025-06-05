@@ -9,29 +9,40 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import type { Project } from '@/types';
-import { sampleProjects, futureAdventuresData, type FutureAdventureCategory } from '@/data/projects'; 
+import { sampleProjects, futureAdventuresData, type FutureAdventureCategory } from '@/data/projects';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast'; // For future adventure notification
 import { cn } from '@/lib/utils';
 
 const ProjectCard: React.FC<{ project: Project; onOpenDetail: (project: Project) => void }> = ({ project, onOpenDetail }) => {
+  const handleCardActivate = () => {
+    onOpenDetail(project);
+  };
+
   return (
-    <Card 
+    <Card
       className="overflow-hidden hover:shadow-lg transition-shadow duration-200 flex flex-col h-full bg-card/90 dark:bg-card/80 acrylic-blur acrylic-light dark:acrylic-dark group cursor-pointer"
-      onClick={() => onOpenDetail(project)}
+      onClick={handleCardActivate}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault(); // Prevent space from scrolling the page if the card itself isn't meant to scroll
+          handleCardActivate();
+        }
+      }}
+      role="button" // For accessibility
+      tabIndex={0}   // For accessibility, makes the card focusable and interactive
       title={`View details for ${project.title}`}
     >
       <div className="relative w-full h-40">
-        <Image 
-          src={project.imageUrl} 
-          alt={project.title} 
-          layout="fill" 
-          objectFit="cover" 
+        <Image
+          src={project.imageUrl}
+          alt={project.title}
+          layout="fill"
+          objectFit="cover"
           className="transition-transform duration-300 group-hover:scale-105"
           data-ai-hint={project.imageHint || "project image"}
         />
          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            {/* Info icon can serve as a visual cue, but the whole card is clickable */}
             <Info size={32} className="text-white/70" />
         </div>
       </div>
@@ -90,7 +101,7 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
         <h1 className="text-xl font-semibold text-foreground">My Projects</h1>
         <p className="text-sm text-muted-foreground">Click on a project card to view details.</p>
       </header>
-      <ScrollArea className="flex-grow pr-1">
+      <ScrollArea className="flex-grow pr-1"> {/* Main scroll area for project list and future adventures */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-5">
           {sampleProjects.map(project => (
             <ProjectCard key={project.id} project={project} onOpenDetail={setSelectedProject} />
@@ -113,7 +124,7 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
       {selectedProject && (
          <Dialog open={!!selectedProject} onOpenChange={(isOpen) => !isOpen && setSelectedProject(null)}>
           <DialogContent className="max-w-3xl w-[90vw] md:w-full acrylic-blur acrylic-light dark:acrylic-dark !bg-card/95 dark:!bg-card/95 p-0 rounded-lg">
-            <ScrollArea className="max-h-[85vh]">
+            <ScrollArea className="max-h-[85vh]"> {/* Scroll area for dialog content */}
               <DialogHeader className="p-6 pb-4 border-b border-border/50 sticky top-0 z-10 bg-inherit">
                 <DialogTitle className="text-2xl flex items-center gap-3 text-foreground">
                   {selectedProject.icon && React.cloneElement(selectedProject.icon as React.ReactElement, { size: 28, className: "text-primary"})}
@@ -123,10 +134,10 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
               </DialogHeader>
               <div className="p-6">
                 <div className="relative w-full h-56 md:h-72 rounded-md overflow-hidden mb-6 shadow-md">
-                  <Image 
-                    src={selectedProject.imageUrl} 
-                    alt={selectedProject.title} 
-                    layout="fill" 
+                  <Image
+                    src={selectedProject.imageUrl}
+                    alt={selectedProject.title}
+                    layout="fill"
                     objectFit="cover"
                     data-ai-hint={selectedProject.imageHint || "project image"}
                     loading="lazy" className="opacity-0 transition-opacity duration-300 loaded:opacity-100"
@@ -134,7 +145,7 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
                   />
                 </div>
                 <div className="project-details text-foreground/90 text-sm leading-relaxed mb-6" dangerouslySetInnerHTML={{ __html: selectedProject.longDescription?.replace(/\n/g, '<br />') || selectedProject.description }} />
-                
+
                 <h3 className="font-semibold mb-2 text-foreground">Technologies Used:</h3>
                 <div className="flex flex-wrap gap-2 mb-6 tech-stack">
                   {selectedProject.technologies.map(tech => (
@@ -184,3 +195,4 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
 };
 
 export default ProjectsApp;
+
