@@ -21,7 +21,7 @@ const ProjectCard: React.FC<{ project: Project; onOpenDetail: (project: Project)
 
   return (
     <Card
-      className="overflow-hidden hover:shadow-lg transition-shadow duration-200 flex flex-col h-full bg-card/90 dark:bg-card/80 acrylic-blur acrylic-light dark:acrylic-dark group cursor-pointer"
+      className="relative z-[1] overflow-hidden hover:shadow-lg transition-shadow duration-200 flex flex-col h-full bg-card/90 dark:bg-card/80 acrylic-blur acrylic-light dark:acrylic-dark group cursor-pointer"
       onClick={handleCardActivate}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -42,7 +42,7 @@ const ProjectCard: React.FC<{ project: Project; onOpenDetail: (project: Project)
           className="transition-transform duration-300 group-hover:scale-105"
           data-ai-hint={project.imageHint || "project image"}
         />
-         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
             <Info size={32} className="text-white/70" />
         </div>
       </div>
