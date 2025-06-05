@@ -55,6 +55,7 @@ export default {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        // Sidebar colors are not directly used but kept for consistency with shadcn
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
           foreground: 'hsl(var(--sidebar-foreground))',
@@ -88,11 +89,26 @@ export default {
             height: '0',
           },
         },
+        'window-open': {
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+        'window-close': {
+          '0%': { opacity: '1', transform: 'scale(1)' },
+          '100%': { opacity: '0', transform: 'scale(0.95)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'window-open': 'window-open 0.2s ease-out forwards',
+        'window-close': 'window-close 0.15s ease-in forwards',
       },
+      boxShadow: {
+        'neumorphic-light': '5px 5px 10px #d9d9d9, -5px -5px 10px #ffffff',
+        'neumorphic-dark': '5px 5px 10px #1a1b1e, -5px -5px 10px #26272a',
+        'window': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)', // Windows 11 like shadow
+      }
     },
   },
   plugins: [require('tailwindcss-animate')],
