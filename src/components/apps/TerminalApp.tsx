@@ -23,7 +23,7 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
   const viewportRef = useRef<HTMLDivElement | null>(null); 
   const hiddenInputRef = useRef<HTMLInputElement>(null);
 
-  const prompt = 'RodrickReborn@fluentfolio:~$ ';
+  const prompt = 'RodrickReborn@Reborn:~$ ';
 
   useEffect(() => {
     if (scrollAreaRootRef.current && !viewportRef.current) {
