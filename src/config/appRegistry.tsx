@@ -11,7 +11,8 @@ import ResumeApp from '@/components/apps/ResumeApp';
 import PhotographyApp from '@/components/apps/PhotographyApp';
 import FutureProjectsApp from '@/components/apps/FutureProjectsApp';
 import TerminalApp from '@/components/apps/TerminalApp';
-import SettingsApp from '@/components/apps/SettingsApp'; // Import the new SettingsApp
+import SettingsApp from '@/components/apps/SettingsApp';
+import ChromeBrowserApp from '@/components/apps/ChromeBrowserApp'; // Import the new ChromeBrowserApp
 
 // Placeholder for other apps not yet fully implemented
 const PlaceholderAppComponent = ({ windowId, appKey }: { windowId: string, appKey: string }) => (
@@ -94,15 +95,15 @@ export const appRegistry: AppDefinition[] = [
     defaultSize: { width: 1024, height: 768 },
     minSize: { width: 400, height: 300 },
     isResizable: true,
-    component: (props) => <PlaceholderAppComponent {...props} />,
+    component: ChromeBrowserApp, // Use the new ChromeBrowserApp
   },
   {
     key: 'settingsApp', 
     name: 'Settings',
     icon: <Settings />, 
-    defaultSize: { width: 750, height: 550 }, // Adjusted size
-    minSize: { width: 500, height: 400 }, // Adjusted minSize
-    component: SettingsApp, // Use the new SettingsApp
+    defaultSize: { width: 750, height: 550 },
+    minSize: { width: 500, height: 400 },
+    component: SettingsApp,
   },
    {
     key: 'mobileDev',
