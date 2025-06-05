@@ -1,6 +1,6 @@
 
+import type React from 'react';
 import type { Project } from '@/types';
-// Import pre-rendered icon elements from the new .tsx file
 import {
   DtunesIcon,
   DzalekaIcon,
@@ -8,7 +8,14 @@ import {
   LoopHireIcon,
   RebornPixelsIcon,
   WindowsOfHopeIcon,
-  InstagramCheckerIcon
+  InstagramCheckerIcon,
+  MobileAppDevIcon,
+  GameDevIcon,
+  DataVizIcon,
+  AiProjectsIcon,
+  DesignWorkIcon,
+  BackendApiIcon,
+  SecurityToolsIcon
 } from './project-icons';
 
 export const sampleProjects: Project[] = [
@@ -180,4 +187,22 @@ Key Features:
     githubUrl: '#',
     category: 'Utility Tool',
   },
+];
+
+
+export interface FutureAdventureCategory {
+  id: string;
+  name: string;
+  fullName: string; // For onclick handler or detailed view later
+  icon: React.ReactNode;
+}
+
+export const futureAdventuresData: FutureAdventureCategory[] = [
+  { id: 'mobile-app-dev', name: 'Mobile App', fullName: 'Mobile App Development', icon: MobileAppDevIcon },
+  { id: 'game-dev', name: 'Game Dev', fullName: 'Game Development', icon: GameDevIcon },
+  { id: 'data-viz', name: 'Data Viz', fullName: 'Data Visualization', icon: DataVizIcon },
+  { id: 'ai-projects', name: 'AI Project', fullName: 'AI Projects', icon: AiProjectsIcon },
+  { id: 'design-work', name: 'Design Work', fullName: 'Design Work', icon: DesignWorkIcon },
+  { id: 'backend-api', name: 'Backend API', fullName: 'Backend API Development', icon: BackendApiIcon },
+  { id: 'security-tools', name: 'Security Tool', fullName: 'Security Tools', icon: SecurityToolsIcon },
 ];

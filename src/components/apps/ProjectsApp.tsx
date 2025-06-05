@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -8,7 +9,8 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import type { Project } from '@/types';
-import { sampleProjects } from '@/data/projects'; // Using sample data
+import { sampleProjects, futureAdventuresData, type FutureAdventureCategory } from '@/data/projects'; 
+import { Separator } from '@/components/ui/separator';
 
 const ProjectCard: React.FC<{ project: Project; onOpenDetail: (project: Project) => void }> = ({ project, onOpenDetail }) => {
   return (
@@ -47,6 +49,26 @@ const ProjectCard: React.FC<{ project: Project; onOpenDetail: (project: Project)
   );
 };
 
+const FutureAdventureItem: React.FC<{ adventure: FutureAdventureCategory }> = ({ adventure }) => {
+  const handleAdventureClick = (adventureName: string) => {
+    // Placeholder action, e.g., log to console or navigate/open another app
+    console.log(`Clicked on Future Adventure: ${adventureName}`);
+    // Potentially: openWindow('futureProjects', { initialCategory: adventure.fullName })
+  };
+
+  return (
+    <Button
+      variant="ghost"
+      className="flex flex-col items-center justify-center h-28 p-2 text-center hover:bg-accent/20 dark:hover:bg-accent/10 w-full"
+      onClick={() => handleAdventureClick(adventure.fullName)}
+      title={adventure.fullName}
+    >
+      <span className="mb-2 text-primary">{React.cloneElement(adventure.icon as React.ReactElement, { size: 32 })}</span>
+      <span className="text-xs leading-tight text-foreground">{adventure.name}</span>
+    </Button>
+  );
+};
+
 
 const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -55,12 +77,25 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
     <div className="h-full flex flex-col bg-background">
       <header className="p-4 border-b">
         <h1 className="text-xl font-semibold">My Projects</h1>
+        <p className="text-sm text-muted-foreground">Click on a project to view details.</p>
       </header>
       <ScrollArea className="flex-grow p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {sampleProjects.map(project => (
             <ProjectCard key={project.id} project={project} onOpenDetail={setSelectedProject} />
           ))}
+        </div>
+
+        <Separator className="my-8" />
+
+        <div>
+          <h3 className="text-lg font-semibold mb-2 text-primary/90">Future Adventures</h3>
+          <p className="text-sm text-muted-foreground mb-4">Areas I'm excited to explore next:</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            {futureAdventuresData.map(adventure => (
+              <FutureAdventureItem key={adventure.id} adventure={adventure} />
+            ))}
+          </div>
         </div>
       </ScrollArea>
 
