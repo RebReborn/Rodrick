@@ -75,7 +75,7 @@ const FutureAdventureItem: React.FC<{ adventure: FutureAdventureCategory, onClic
     >
       <span className="mb-2 text-primary">{React.cloneElement(adventure.icon as React.ReactElement, { size: 32 })}</span>
       <span className="text-xs leading-tight text-foreground">{adventure.name}</span>
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-md"></div>
+      {/* The gradient overlay div was here and has been removed. */}
     </Button>
   );
 };
@@ -289,3 +289,5 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
 };
 
 export default ProjectsApp;
+
+    
