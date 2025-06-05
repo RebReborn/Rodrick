@@ -19,7 +19,7 @@ const AboutApp: React.FC<{ windowId: string; appKey: string }> = () => {
         <div className="p-0 md:p-2 about-content"> {/* Removed outer padding, using user CSS like structure */}
           <header className="flex flex-col items-center text-center pt-5 md:pt-2">
             <Avatar className="w-[150px] h-[150px] border-4 border-primary mb-5 profile-pic"> {/* User CSS size and border */}
-              <AvatarImage src="https://placehold.co/200x200.png" alt="Rodrick Ramadhani" data-ai-hint="professional portrait" />
+              <AvatarImage src="https://media.licdn.com/dms/image/v2/C4E03AQFXgf_Gk6wARA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1578436010321?e=1754524800&v=beta&t=Yw80y45pBcmzSxsi73skcgqKYYv3C_PgiPhzZaDKI2M" alt="Rodrick Ramadhani" data-ai-hint="professional portrait" />
               <AvatarFallback>RR</AvatarFallback>
             </Avatar>
             <h1 className="text-3xl md:text-4xl font-bold text-primary">Rodrick Ramadhani</h1>

@@ -184,7 +184,7 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
                     </Button>
                   )}
                 </div>
-                 <Button onClick={() => setSelectedProject(null)} variant="ghost" className="absolute right-4 top-4 text-muted-foreground hover:text-foreground">Close</Button>
+                {/* Removed custom absolute positioned close button from here */}
               </DialogFooter>
             </ScrollArea>
           </DialogContent>
