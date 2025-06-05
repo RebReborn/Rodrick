@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -12,33 +13,33 @@ const Desktop: React.FC = () => {
   const { windows } = useWindowManager();
 
   const desktopApps = appRegistry.filter(app => 
-    ['projects', 'about', 'resume', 'futureProjects'].includes(app.key)
+    ['projects', 'about', 'resume', 'photography', 'contact'].includes(app.key) // Added contact
   );
 
   return (
     <div className="relative h-screen w-screen overflow-hidden select-none">
       {/* Desktop Background */}
       <Image 
-        src="/desktop-wallpaper.jpg" // Replace with your desired wallpaper
+        src="https://4kwallpapers.com/images/wallpapers/windows-11-dark-mode-stock-official-3840x2400-5630.jpg" // Updated wallpaper
         alt="Desktop Wallpaper"
         layout="fill"
         objectFit="cover"
         quality={90}
         priority
         className="z-0"
-        data-ai-hint="windows landscape"
+        // data-ai-hint="windows landscape" // data-ai-hint is not needed for specific URLs
       />
-      <div className="absolute inset-0 bg-black/10 dark:bg-black/30 z-0"></div>
+      {/* Overlay for style, if needed, but wallpaper might be enough. Original had bg-black/10 dark:bg-black/30 */}
+      {/* <div className="absolute inset-0 bg-black/5 dark:bg-black/20 z-0"></div> */}
 
 
       {/* Desktop Icons */}
-      <div className="absolute top-0 left-0 p-4 z-10 flex flex-col flex-wrap h-full content-start gap-1">
-        {desktopApps.map((app, index) => (
+      {/* Switched to grid layout as per user CSS: grid-template-columns: repeat(auto-fill, 100px); grid-auto-rows: 120px; gap: 20px; */}
+      <div className="absolute top-0 left-0 p-5 z-10 grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] auto-rows-[120px] gap-5 content-start h-[calc(100vh-48px)]">
+        {desktopApps.map((app) => (
           <DesktopIcon 
             key={app.key} 
             app={app}
-            // Basic grid positioning, can be made draggable/savable later
-            // style={{ top: `${(index % 5) * 100 + 16}px`, left: `${Math.floor(index/5) * 110 + 16}px`}}
           />
         ))}
       </div>

@@ -4,8 +4,9 @@
 
 @layer base {
   :root {
-    --background: 0 0% 94%; /* Light Gray #F0F0F0 */
-    --foreground: 225 5% 14%; /* Dark Gray for text on light #202124 */
+    /* Updated based on --win-gray and --win-blue/--win-accent from user CSS */
+    --background: 0 0% 95%; /* قريب من #f3f3f3 (win-gray) */
+    --foreground: 225 5% 14%; /* Dark Gray for text on light */
 
     --card: 0 0% 100%;
     --card-foreground: 225 5% 14%;
@@ -13,26 +14,26 @@
     --popover: 0 0% 100%;
     --popover-foreground: 225 5% 14%;
 
-    --primary: 208 38% 51%; /* Subtle Blue #5584AC */
-    --primary-foreground: 0 0% 100%;
+    --primary: 210 100% 42%; /* #0078d7 (win-blue) */
+    --primary-foreground: 0 0% 100%; /* White text on primary */
 
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 225 5% 14%;
 
-    --muted: 0 0% 90%; /* Slightly darker muted for light theme */
+    --muted: 0 0% 90%;
     --muted-foreground: 0 0% 45.1%;
 
-    --accent: 257 22% 67%; /* Soft Purple #A394BF */
-    --accent-foreground: 0 0% 100%;
+    --accent: 43 100% 50%; /* #ffb900 (win-accent) */
+    --accent-foreground: 225 5% 14%; /* Dark text on accent */
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
     --border: 0 0% 85%;
     --input: 0 0% 89.8%;
-    --ring: 208 38% 51%; /* Subtle Blue for rings */
+    --ring: 210 100% 42%; /* #0078d7 for rings */
 
-    --radius: 0.5rem;
+    --radius: 0.5rem; /* 8px, consistent with user CSS border-radius */
 
     /* Chart colors can remain default or be adjusted if needed */
     --chart-1: 12 76% 61%;
@@ -43,33 +44,34 @@
   }
 
   .dark {
-    --background: 225 5% 14%; /* Dark Gray #202124 */
-    --foreground: 0 0% 94%; /* Light Gray for text on dark #F0F0F0 */
+    /* Updated based on --win-dark and --win-blue/--win-accent */
+    --background: 0 0% 12%; /* #1e1e1e (win-dark) */
+    --foreground: 0 0% 95%; /* Light Gray for text on dark */
 
-    --card: 225 5% 16%; /* Slightly lighter than background for depth */
-    --card-foreground: 0 0% 94%;
+    --card: 0 0% 12%; /* #1e1e1e, similar to background for a flat dark look or slightly lighter like 240 4% 16% for #282828*/
+    --card-foreground: 0 0% 95%;
 
-    --popover: 225 5% 16%;
-    --popover-foreground: 0 0% 94%;
+    --popover: 0 0% 10%; /* Slightly darker than card for popovers */
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 208 38% 51%; /* Subtle Blue #5584AC */
+    --primary: 210 100% 42%; /* #0078d7 (win-blue) */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 225 5% 20%;
-    --secondary-foreground: 0 0% 94%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 225 5% 25%; /* Slightly lighter muted for dark theme */
+    --muted: 0 0% 20%;
     --muted-foreground: 0 0% 63.9%;
 
-    --accent: 257 22% 67%; /* Soft Purple #A394BF */
-    --accent-foreground: 0 0% 100%;
+    --accent: 43 100% 50%; /* #ffb900 (win-accent) */
+    --accent-foreground: 0 0% 12%; /* Dark text on accent for dark mode */
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 350 91% 55%; /* Brighter red for dark mode close buttons, e.g., #e81123 */
     --destructive-foreground: 0 0% 98%;
 
-    --border: 225 5% 25%;
-    --input: 225 5% 20%;
-    --ring: 208 38% 51%; /* Subtle Blue for rings */
+    --border: 0 0% 25%;
+    --input: 0 0% 15%;
+    --ring: 210 100% 42%;
   }
 }
 
@@ -79,22 +81,25 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Apply a subtle noise texture for Mica-like effect */
-    /* background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); */
+    height: 100vh;
+    overflow: hidden;
+    /* background-image handled in Desktop.tsx */
   }
 }
 
-/* Styles for acrylic blur effect */
+/* Styles for acrylic blur effect (from original globals.css, slightly adjusted for new theme) */
 .acrylic-blur {
-  @apply backdrop-blur-md; /* backdrop-filter: blur(12px); */
+  @apply backdrop-blur-xl; /* backdrop-filter: blur(20px) from user CSS */
 }
 
 .acrylic-light {
-  background-color: rgba(255, 255, 255, 0.6); /* Light mode acrylic */
+  /* background-color: rgba(243, 243, 243, 0.75); Light mode acrylic, using a value derived from --win-gray */
+  background-color: hsl(var(--background) / 0.75);
 }
 
 .dark .acrylic-dark {
-  background-color: rgba(32, 33, 36, 0.7); /* Dark mode acrylic */
+  /* background-color: rgba(30, 30, 30, 0.8); Dark mode acrylic, from --win-dark */
+   background-color: hsl(var(--background) / 0.8);
 }
 
 /* Custom scrollbar for a more Fluent feel */
@@ -110,4 +115,26 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-secondary;
+}
+
+/* Notification styles from user CSS */
+.notification {
+    @apply fixed bottom-[70px] right-5 p-4 rounded-md shadow-lg z-[1002] text-white;
+    background-color: hsl(var(--primary) / 0.9); /* using primary with opacity */
+    /* animation: fadeIn 0.3s ease; applied via tailwind.config.ts */
+    max-width: 300px;
+    border-left-width: 4px;
+    border-left-color: hsl(var(--primary)); /* Default to primary */
+}
+
+.notification.success {
+    border-left-color: #4CAF50; /* Specific success color */
+}
+
+.notification.future {
+    border-left-color: hsl(var(--accent)); /* Accent for future */
+}
+
+.notification i { /* Assuming LTR, so this is for icons on the left */
+    @apply mr-2.5;
 }

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -7,38 +8,57 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import type { Skill } from '@/types';
 import { skillsData } from '@/data/skills';
+import { Github, Linkedin, Twitter, Instagram as InstagramIconLucide } from 'lucide-react'; // Using Lucide for consistency
 
 const AboutApp: React.FC<{ windowId: string; appKey: string }> = () => {
+  // User CSS: .about-content padding 20px; .profile-pic 150px, border 3px solid var(--win-blue);
+  // .social-links gap 15px, icon size 24px; .tech-item styling
   return (
-    <div className="h-full flex flex-col bg-background text-foreground">
+    <div className="h-full flex flex-col bg-transparent text-foreground"> {/* Window itself has padding now */}
       <ScrollArea className="flex-grow">
-        <div className="p-6 md:p-8">
-          <header className="flex flex-col md:flex-row items-center gap-6 mb-8 pb-6 border-b">
-            <Avatar className="w-24 h-24 md:w-32 md:h-32 border-2 border-primary">
-              <AvatarImage src="https://placehold.co/200x200.png" alt="Your Name" data-ai-hint="professional portrait" />
-              <AvatarFallback>YN</AvatarFallback>
+        <div className="p-0 md:p-2 about-content"> {/* Removed outer padding, using user CSS like structure */}
+          <header className="flex flex-col items-center text-center pt-5 md:pt-2">
+            <Avatar className="w-[150px] h-[150px] border-4 border-primary mb-5 profile-pic"> {/* User CSS size and border */}
+              <AvatarImage src="https://placehold.co/200x200.png" alt="Rodrick Ramadhani" data-ai-hint="professional portrait" />
+              <AvatarFallback>RR</AvatarFallback>
             </Avatar>
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-primary">Your Name</h1>
-              <p className="text-lg text-muted-foreground mt-1">Aspiring Full-Stack Developer | Creative Thinker | Tech Enthusiast</p>
+            <h1 className="text-3xl md:text-4xl font-bold text-primary">Rodrick Ramadhani</h1>
+            <p className="text-lg text-muted-foreground mt-1">Software Developer | Designer | Creative Thinker</p>
+            
+            {/* User CSS: .social-links */}
+            <div className="flex gap-[15px] my-5 social-links">
+              <a href="https://github.com/Rebreborn" className="text-foreground hover:text-primary transition-transform hover:scale-120" target="_blank" rel="noopener noreferrer" title="GitHub">
+                <Github size={24} />
+              </a>
+              <a href="https://linkedin.com/in/rodrickramadhani" className="text-foreground hover:text-primary transition-transform hover:scale-120" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+                <Linkedin size={24} />
+              </a>
+              <a href="https://x.com/mistakesacademy" className="text-foreground hover:text-primary transition-transform hover:scale-120" target="_blank" rel="noopener noreferrer" title="Twitter/X">
+                <Twitter size={24} />
+              </a>
+              <a href="#" className="text-foreground hover:text-primary transition-transform hover:scale-120" target="_blank" rel="noopener noreferrer" title="Instagram">
+                <InstagramIconLucide size={24} />
+              </a>
             </div>
           </header>
 
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-3 text-primary/90">About Me</h2>
-            <p className="text-base leading-relaxed text-foreground/90 mb-3">
-              Hello! I'm a passionate and driven developer with a keen interest in creating innovative and user-friendly applications. 
-              My journey into technology started with a fascination for how software can solve real-world problems and enhance human experiences. 
-              I thrive in collaborative environments and am always eager to learn new technologies and methodologies.
-            </p>
+          <section className="mb-8 text-center max-w-xl mx-auto">
             <p className="text-base leading-relaxed text-foreground/90">
-              Outside of coding, I enjoy [Your Hobby 1, e.g., landscape photography], [Your Hobby 2, e.g., hiking], and [Your Hobby 3, e.g., exploring new cuisines]. 
-              These activities help me stay creative and bring fresh perspectives to my work.
+              I'm a passionate developer with experience in web and mobile applications. I love solving complex problems and creating beautiful, functional interfaces. My journey into technology started with a fascination for how software can solve real-world problems and enhance human experiences. 
+              I thrive in collaborative environments and am always eager to learn new technologies and methodologies.
             </p>
           </section>
 
-          <section>
-            <h2 className="text-2xl font-semibold mb-4 text-primary/90">My Skills</h2>
+          <section className="max-w-xl mx-auto">
+            <h2 className="text-2xl font-semibold mb-4 text-primary/90 text-center">Skills</h2>
+            {/* User CSS: .tech-stack for skills */}
+            <div className="flex flex-wrap gap-2.5 justify-center mb-6 tech-stack">
+                {skillsData.map((skill) => (
+                     <span key={skill.name} className="text-xs bg-primary/20 text-primary-foreground dark:text-primary px-[10px] py-[5px] rounded-[15px] tech-item">{skill.name} ({skill.level}%)</span>
+                ))}
+                 <span className="text-xs bg-accent/20 text-accent-foreground dark:text-accent px-[10px] py-[5px] rounded-[15px] tech-item">UI/UX Design</span>
+                 <span className="text-xs bg-accent/20 text-accent-foreground dark:text-accent px-[10px] py-[5px] rounded-[15px] tech-item">Photography</span>
+            </div>
             <div className="space-y-5">
               {skillsData.map((skill: Skill) => (
                 <div key={skill.name}>
@@ -52,7 +72,7 @@ const AboutApp: React.FC<{ windowId: string; appKey: string }> = () => {
             </div>
           </section>
 
-           <section className="mt-8">
+           <section className="mt-10 text-center max-w-xl mx-auto pb-5">
             <h2 className="text-2xl font-semibold mb-3 text-primary/90">Interests & Goals</h2>
             <p className="text-base leading-relaxed text-foreground/90 mb-3">
               I'm particularly interested in exploring fields like Artificial Intelligence, Web3 technologies, and scalable cloud architectures. 

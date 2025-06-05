@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -24,38 +25,57 @@ const Taskbar: React.FC = () => {
   const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
 
   useEffect(() => {
-    const timer = setInterval(() => {
+    const updateDateTime = () => {
       const now = new Date();
-      setCurrentTime(now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-      setCurrentDate(now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }));
-    }, 1000);
+      setCurrentTime(now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })); // Numeric hour for 9:30 AM format
+      setCurrentDate(now.toLocaleDateString([], { month: 'numeric', day: 'numeric', year: 'numeric' })); // Standard date format
+    };
+    updateDateTime(); // Initial call
+    const timer = setInterval(updateDateTime, 1000 * 30); // Update every 30 seconds
     return () => clearInterval(timer);
   }, []);
 
-  const pinnedApps = appRegistry.filter(app => ['projects', 'about', 'contact', 'resume', 'photography', 'futureProjects'].includes(app.key));
+  const pinnedApps = appRegistry.filter(app => ['projects', 'about', 'photography', 'contact', 'resume'].includes(app.key)); // User CSS implies contact & resume might be pinned
 
   const handleAppIconClick = (appKey: string) => {
     const openAppWindow = windows.find(w => w.appKey === appKey && !w.isMinimized);
     if (openAppWindow) {
       focusWindow(openAppWindow.id);
     } else {
-      openWindow(appKey);
+      // If minimized, restore and focus
+      const minimizedWindow = windows.find(w => w.appKey === appKey && w.isMinimized);
+      if (minimizedWindow) {
+        focusWindow(minimizedWindow.id); // focusWindow handles un-minimizing
+      } else {
+        openWindow(appKey);
+      }
     }
+    setIsStartMenuOpen(false); // Close start menu if an app is opened from taskbar
   };
   
   const getWindowForAppKey = (appKey: string): WindowInstance | undefined => {
     return windows.find(w => w.appKey === appKey);
   };
 
+  const taskbarButtonHeightClass = "h-11"; // Corresponds to 44px, derived from h-[48px] - p-1 for button
+  const taskbarIconSize = "w-11"; // Match height for square icons
+
   return (
     <>
       <StartMenu isOpen={isStartMenuOpen} onClose={() => setIsStartMenuOpen(false)} />
-      <footer className="fixed bottom-0 left-0 right-0 h-[42px] bg-card/80 dark:bg-card/80 acrylic-blur acrylic-light dark:acrylic-dark border-t border-border/50 shadow-md flex items-center justify-between px-2 z-50 select-none">
-        <div className="flex items-center gap-1">
+      {/* User CSS: height: 48px; justify-content: center; background-color: rgba(32, 32, 32, 0.8); backdrop-filter: blur(10px) -> backdrop-blur-xl */}
+      <footer className={cn(
+        "fixed bottom-0 left-0 right-0 h-[48px]",
+        "dark:bg-neutral-800/80 bg-neutral-200/80", // rgba(32,32,32,0.8) for dark, light equivalent
+        "acrylic-blur dark:acrylic-dark", // Use existing acrylic setup which maps to backdrop-blur-xl
+        "border-t border-black/20 dark:border-white/10", // Subtle border
+        "shadow-md flex items-center justify-center px-2 z-50 select-none" // Centered content
+      )}>
+        <div className="flex items-center gap-1"> {/* This div will contain the centered icons */}
           <Button
             variant="ghost"
             size="icon"
-            className={cn("h-9 w-9 hover:bg-accent/20", isStartMenuOpen && "bg-accent/30")}
+            className={cn(taskbarButtonHeightClass, taskbarIconSize, "hover:bg-white/10 dark:hover:bg-white/5", isStartMenuOpen && "bg-white/20 dark:bg-white/10")}
             onClick={() => setIsStartMenuOpen(!isStartMenuOpen)}
             aria-label="Start Menu"
           >
@@ -64,7 +84,7 @@ const Taskbar: React.FC = () => {
           {pinnedApps.map((app) => {
             const windowInstance = getWindowForAppKey(app.key);
             const isActive = windowInstance && !windowInstance.isMinimized && windowInstance.isActive;
-            const isOpen = windowInstance && !windowInstance.isMinimized;
+            const isOpenAndNotMinimized = windowInstance && !windowInstance.isMinimized;
             
             return (
               <Button
@@ -72,17 +92,17 @@ const Taskbar: React.FC = () => {
                 variant="ghost"
                 size="icon"
                 className={cn(
-                  "h-9 w-9 relative hover:bg-accent/20",
-                  isActive && "bg-accent/30",
+                  taskbarButtonHeightClass, taskbarIconSize, "relative hover:bg-white/10 dark:hover:bg-white/5",
+                  isActive && "bg-white/20 dark:bg-white/10",
                 )}
                 onClick={() => handleAppIconClick(app.key)}
                 title={app.name}
               >
-                {app.icon}
-                {isOpen && (
+                {React.cloneElement(app.icon as React.ReactElement, {size: 20})}
+                {isOpenAndNotMinimized && (
                    <span className={cn(
-                     "absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full",
-                     isActive ? "bg-primary" : "bg-foreground/50"
+                     "absolute bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 rounded-full", // Adjusted underline position for 48px bar
+                     isActive ? "bg-primary" : "bg-foreground/60 dark:bg-foreground/40"
                    )}></span>
                 )}
               </Button>
@@ -92,7 +112,7 @@ const Taskbar: React.FC = () => {
              const appDef = appRegistry.find(app => app.key === windowInstance.appKey);
              if (!appDef) return null;
              const isActive = !windowInstance.isMinimized && windowInstance.isActive;
-             const isOpen = !windowInstance.isMinimized;
+             const isOpenAndNotMinimized = !windowInstance.isMinimized;
 
              return (
               <Button
@@ -100,17 +120,17 @@ const Taskbar: React.FC = () => {
                 variant="ghost"
                 size="icon"
                 className={cn(
-                  "h-9 w-9 relative hover:bg-accent/20",
-                  isActive && "bg-accent/30",
+                  taskbarButtonHeightClass, taskbarIconSize, "relative hover:bg-white/10 dark:hover:bg-white/5",
+                  isActive && "bg-white/20 dark:bg-white/10",
                 )}
                 onClick={() => focusWindow(windowInstance.id)}
                 title={appDef.name}
               >
-                {appDef.icon}
-                {isOpen && (
+                {React.cloneElement(appDef.icon as React.ReactElement, {size: 20})}
+                {isOpenAndNotMinimized && (
                    <span className={cn(
-                     "absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full",
-                     isActive ? "bg-primary" : "bg-foreground/50"
+                     "absolute bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 rounded-full",
+                     isActive ? "bg-primary" : "bg-foreground/60 dark:bg-foreground/40"
                    )}></span>
                 )}
               </Button>
@@ -118,9 +138,10 @@ const Taskbar: React.FC = () => {
            })}
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* System Tray items - absolutely positioned to the right */}
+        <div className="absolute right-2 flex items-center gap-2">
           <ThemeToggle />
-          <div className="text-right text-xs px-2">
+          <div className="text-right text-xs px-2 text-foreground">
             <div>{currentTime}</div>
             <div>{currentDate}</div>
           </div>

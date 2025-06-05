@@ -10,7 +10,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
+        body: ['Inter', 'sans-serif'], // Kept Inter as per PRD
         headline: ['Inter', 'sans-serif'],
         code: ['monospace'],
       },
@@ -55,8 +55,7 @@ export default {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
-        // Sidebar colors are not directly used but kept for consistency with shadcn
-        sidebar: {
+        sidebar: { // Kept for shadcn/ui sidebar component if used later
           DEFAULT: 'hsl(var(--sidebar-background))',
           foreground: 'hsl(var(--sidebar-foreground))',
           primary: 'hsl(var(--sidebar-primary))',
@@ -68,46 +67,58 @@ export default {
         },
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        lg: 'var(--radius)', // 8px
+        md: 'calc(var(--radius) - 2px)', // 6px
+        sm: 'calc(var(--radius) - 4px)', // 4px
       },
       keyframes: {
         'accordion-down': {
-          from: {
-            height: '0',
-          },
-          to: {
-            height: 'var(--radix-accordion-content-height)',
-          },
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' },
         },
         'accordion-up': {
-          from: {
-            height: 'var(--radix-accordion-content-height)',
-          },
-          to: {
-            height: '0',
-          },
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' },
         },
-        'window-open': {
+        'window-open': { // Current animation
           '0%': { opacity: '0', transform: 'scale(0.95)' },
           '100%': { opacity: '1', transform: 'scale(1)' },
         },
-        'window-close': {
+        'window-close': { // Current animation
           '0%': { opacity: '1', transform: 'scale(1)' },
           '100%': { opacity: '0', transform: 'scale(0.95)' },
         },
+        'start-menu-open': { // For start menu centered transform: translateX(-50%) scale(0.9) to scale(1)
+            '0%': { opacity: '0', transform: 'translateX(-50%) scale(0.9)' },
+            '100%': { opacity: '1', transform: 'translateX(-50%) scale(1)' },
+        },
+        'start-menu-close': {
+            '0%': { opacity: '1', transform: 'translateX(-50%) scale(1)' },
+            '100%': { opacity: '0', transform: 'translateX(-50%) scale(0.9)' },
+        },
+        'fadeIn': { // For notification
+          from: { opacity: '0', transform: 'translateY(10px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        'window-open': 'window-open 0.2s ease-out forwards',
+        'window-open': 'window-open 0.2s ease-out forwards', // Keep existing window open/close
         'window-close': 'window-close 0.15s ease-in forwards',
+        'start-menu-open': 'start-menu-open 0.2s ease-out forwards',
+        'start-menu-close': 'start-menu-close 0.2s ease-out forwards',
+        'fadeIn': 'fadeIn 0.3s ease forwards',
       },
       boxShadow: {
+        // Updated based on --shadow: 0 4px 12px rgba(0,0,0,0.15)
+        'window': '0 4px 12px rgba(0,0,0,0.15)',
+        // Kept neumorphic for potential future use or if some components relied on it
         'neumorphic-light': '5px 5px 10px #d9d9d9, -5px -5px 10px #ffffff',
         'neumorphic-dark': '5px 5px 10px #1a1b1e, -5px -5px 10px #26272a',
-        'window': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)', // Windows 11 like shadow
+      },
+      backdropBlur: { // Ensuring xl for blur(20px)
+        'xl': '20px',
       }
     },
   },

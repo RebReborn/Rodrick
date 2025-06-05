@@ -1,3 +1,4 @@
+
 "use client";
 
 import type React from 'react';
@@ -44,16 +45,28 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
     }
   }, [instance.id, instance.isFocusedOnMount, bringToFront]);
   
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === titleBarRef.current || titleBarRef.current?.contains(e.target as Node)) {
-      if (instance.isMaximized) return; // Don't drag if maximized
-
-      setDraggingState(instance.id, true);
-      setInitialDragPos({ x: e.clientX, y: e.clientY });
-      setInitialWindowPos({ x: instance.x, y: instance.y });
-      bringToFront(instance.id);
-      e.preventDefault();
+  const handleMouseDownOnTitleBar = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Check if the click target is one of the control buttons
+    const targetElement = e.target as HTMLElement;
+    if (targetElement.closest('button[aria-label]')) { // Assumes control buttons have aria-labels
+        return; // Do not initiate drag if a control button was clicked
     }
+
+    if (instance.isMaximized && e.detail === 2) { // Double click to unmaximize
+      toggleMaximizeWindow(instance.id);
+      // Optionally, position the window under the cursor after unmaximizing
+      // This is complex and involves calculating new X/Y based on cursor and original size.
+      // For now, it will revert to its last non-maximized position.
+      return;
+    }
+    if (instance.isMaximized) return; // Don't drag if maximized (single click)
+
+
+    setDraggingState(instance.id, true);
+    setInitialDragPos({ x: e.clientX, y: e.clientY });
+    setInitialWindowPos({ x: instance.x, y: instance.y });
+    bringToFront(instance.id);
+    e.preventDefault();
   };
   
   const handleResizeMouseDown = (e: React.MouseEvent<HTMLDivElement>, direction: string) => {
@@ -72,10 +85,12 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
     if (instance.isDragging && initialDragPos && initialWindowPos) {
       const dx = e.clientX - initialDragPos.x;
       const dy = e.clientY - initialDragPos.y;
-      const newX = Math.max(0, initialWindowPos.x + dx);
-      // Ensure window title bar stays visible (approx 32px height)
-      const newY = Math.max(0, initialWindowPos.y + dy);
+      
+      // Prevent dragging outside viewport, considering taskbar height (48px)
+      const newX = Math.max(0, Math.min(initialWindowPos.x + dx, window.innerWidth - instance.width));
+      const newY = Math.max(0, Math.min(initialWindowPos.y + dy, window.innerHeight - 48 - 32)); // 32 for title bar
       updateWindowPosition(instance.id, newX, newY);
+
     } else if (instance.isResizing && initialResizePos && initialWindowSize && resizeDirection) {
         const dx = e.clientX - initialResizePos.x;
         const dy = e.clientY - initialResizePos.y;
@@ -90,13 +105,26 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
 
         if (resizeDirection.includes("right")) newWidth = Math.max(minWidth, initialWindowSize.width + dx);
         if (resizeDirection.includes("bottom")) newHeight = Math.max(minHeight, initialWindowSize.height + dy);
+        
         if (resizeDirection.includes("left")) {
-            newWidth = Math.max(minWidth, initialWindowSize.width - dx);
-            if (newWidth > minWidth) newX = instance.x + dx;
+            const proposedWidth = initialWindowSize.width - dx;
+            if (proposedWidth >= minWidth) {
+                newWidth = proposedWidth;
+                newX = initialWindowPos ? initialWindowPos.x + dx : instance.x + dx; // Use initialWindowPos if available
+            } else {
+                newWidth = minWidth;
+                newX = initialWindowPos ? initialWindowPos.x + (initialWindowSize.width - minWidth) : instance.x + (initialWindowSize.width - minWidth);
+            }
         }
         if (resizeDirection.includes("top")) {
-            newHeight = Math.max(minHeight, initialWindowSize.height - dy);
-            if (newHeight > minHeight) newY = instance.y + dy;
+            const proposedHeight = initialWindowSize.height - dy;
+            if (proposedHeight >= minHeight) {
+                newHeight = proposedHeight;
+                newY = initialWindowPos ? initialWindowPos.y + dy : instance.y + dy;
+            } else {
+                newHeight = minHeight;
+                newY = initialWindowPos ? initialWindowPos.y + (initialWindowSize.height - minHeight) : instance.y + (initialWindowSize.height - minHeight);
+            }
         }
         
         updateWindowSize(instance.id, newWidth, newHeight);
@@ -106,7 +134,7 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
     }
   }, [instance, initialDragPos, initialWindowPos, initialResizePos, initialWindowSize, resizeDirection, updateWindowPosition, updateWindowSize]);
 
-  const handleMouseUp = useCallback(() => {
+  const handleMouseUpGlobal = useCallback(() => {
     if (instance.isDragging) {
       setDraggingState(instance.id, false);
       setInitialDragPos(null);
@@ -121,13 +149,18 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
   }, [instance.id, instance.isDragging, instance.isResizing, setDraggingState, setResizingState]);
 
   useEffect(() => {
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    if (instance.isDragging || instance.isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUpGlobal);
+    } else {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUpGlobal);
+    }
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mouseup', handleMouseUpGlobal);
     };
-  }, [handleMouseMove, handleMouseUp]);
+  }, [instance.isDragging, instance.isResizing, handleMouseMove, handleMouseUpGlobal]);
 
   if (instance.isMinimized) {
     return null;
@@ -137,8 +170,8 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
     position: 'absolute',
     top: 0,
     left: 0,
-    width: 'calc(100vw - 2px)', // Account for potential borders
-    height: 'calc(100vh - 42px - 2px)', // Account for taskbar and borders
+    width: '100vw', // Maximized fills screen width
+    height: 'calc(100vh - 48px)', // Account for 48px taskbar
     zIndex: instance.zIndex,
     transition: 'width 0.2s ease-out, height 0.2s ease-out, top 0.2s ease-out, left 0.2s ease-out',
   } : {
@@ -150,62 +183,72 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
     zIndex: instance.zIndex,
     minWidth: instance.minWidth,
     minHeight: instance.minHeight,
-    transition: instance.isDragging || instance.isResizing ? 'none' : 'opacity 0.2s ease-out, transform 0.2s ease-out',
+    // User CSS: transition: none during drag/resize, else opacity/transform 0.2s
+    transition: instance.isDragging || instance.isResizing ? 'none' : 'opacity 0.2s ease-out, transform 0.2s ease-out, width 0.2s ease-out, height 0.2s ease-out, top 0.2s ease-out, left 0.2s ease-out',
   };
 
   const resizeHandleClasses = "absolute bg-transparent z-10";
   const resizeHandles = [
-    { direction: "top-left", className: "cursor-nwse-resize top-0 left-0 w-2 h-2" },
-    { direction: "top", className: "cursor-ns-resize top-0 left-1/2 -translate-x-1/2 w-full h-1" },
-    { direction: "top-right", className: "cursor-nesw-resize top-0 right-0 w-2 h-2" },
-    { direction: "left", className: "cursor-ew-resize top-1/2 -translate-y-1/2 left-0 w-1 h-full" },
-    { direction: "right", className: "cursor-ew-resize top-1/2 -translate-y-1/2 right-0 w-1 h-full" },
-    { direction: "bottom-left", className: "cursor-nesw-resize bottom-0 left-0 w-2 h-2" },
-    { direction: "bottom", className: "cursor-ns-resize bottom-0 left-1/2 -translate-x-1/2 w-full h-1" },
-    { direction: "bottom-right", className: "cursor-nwse-resize bottom-0 right-0 w-2 h-2" },
+    // Corners (larger hit area)
+    { direction: "top-left", className: "cursor-nwse-resize top-0 left-0 w-3 h-3 -m-1" },
+    { direction: "top-right", className: "cursor-nesw-resize top-0 right-0 w-3 h-3 -m-1" },
+    { direction: "bottom-left", className: "cursor-nesw-resize bottom-0 left-0 w-3 h-3 -m-1" },
+    { direction: "bottom-right", className: "cursor-nwse-resize bottom-0 right-0 w-3 h-3 -m-1" },
+    // Edges (thinner hit area but covers full edge)
+    { direction: "top", className: "cursor-ns-resize top-0 left-1/2 -translate-x-1/2 w-[calc(100%-16px)] h-2 -my-1" },
+    { direction: "left", className: "cursor-ew-resize top-1/2 -translate-y-1/2 left-0 w-2 h-[calc(100%-16px)] -mx-1" },
+    { direction: "right", className: "cursor-ew-resize top-1/2 -translate-y-1/2 right-0 w-2 h-[calc(100%-16px)] -mx-1" },
+    { direction: "bottom", className: "cursor-ns-resize bottom-0 left-1/2 -translate-x-1/2 w-[calc(100%-16px)] h-2 -my-1" },
   ];
-
+  
+  // User CSS: background-color: rgba(32, 32, 32, 0.9); backdrop-filter: blur(20px); border-radius: 8px; box-shadow: var(--shadow)
+  // For dark theme, this translates to dark:bg-neutral-800/90, acrylic-blur dark:acrylic-dark, rounded-lg, shadow-window
+  // Header User CSS: background-color: rgba(255, 255, 255, 0.05);
+  // This translates to bg-white/5 (or black/5 in dark mode if title bar is always darkish)
   return (
     <div
       ref={windowRef}
       style={windowStyle}
       className={cn(
-        'flex flex-col bg-card text-card-foreground rounded-lg shadow-window overflow-hidden border',
-        isAppActive ? 'border-primary ring-1 ring-primary' : 'border-border',
-        instance.isMaximized ? 'rounded-none' : '',
-        'animate-window-open'
+        'flex flex-col rounded-lg shadow-window overflow-hidden border',
+        'dark:bg-neutral-800/90 bg-neutral-100/90', // Base window color
+        'acrylic-blur acrylic-light dark:acrylic-dark', // Applies backdrop blur and slight tint
+        isAppActive ? 'border-primary ring-1 ring-primary' : 'border-black/10 dark:border-white/10',
+        instance.isMaximized ? '!rounded-none' : '', // Important to override rounded-lg
+        isOpen ? 'animate-window-open' : 'animate-window-close' // Conditional open/close animation
       )}
       onClick={() => {if (!isAppActive) bringToFront(instance.id)}}
-      onMouseDownCapture={() => {if (!isAppActive) bringToFront(instance.id)}}
+      onMouseDownCapture={() => {if (!isAppActive) bringToFront(instance.id)}} // Use onMouseDownCapture for earlier focus
     >
       <div
         ref={titleBarRef}
-        onMouseDown={handleMouseDown}
+        onMouseDown={handleMouseDownOnTitleBar}
         onDoubleClick={() => toggleMaximizeWindow(instance.id)}
         className={cn(
           'h-8 px-2 flex items-center justify-between select-none shrink-0',
+          'bg-white/5 dark:bg-black/10', // Title bar color from user CSS (rgba(255,255,255,0.05))
+          // Removed acrylic from title bar for a flatter look as per some Win11 styles, can be re-added if preferred
           instance.isMaximized ? '' : 'cursor-grab',
-          isAppActive ? 'bg-muted/80 dark:bg-muted/30' : 'bg-card dark:bg-card',
-          'acrylic-blur', isAppActive ? 'acrylic-light dark:acrylic-dark' : 'bg-opacity-80 dark:bg-opacity-80'
+          isAppActive ? 'opacity-100' : 'opacity-90' // Subtle active state for title bar
         )}
       >
         <div className="flex items-center gap-2 truncate">
-          {instance.icon && <span className="w-4 h-4">{instance.icon}</span>}
-          <span className="text-xs font-medium truncate">{instance.title}</span>
+          {instance.icon && React.cloneElement(instance.icon as React.ReactElement, { className: "w-4 h-4 text-foreground" })}
+          <span className="text-xs font-medium truncate text-foreground">{instance.title}</span>
         </div>
         <div className="flex items-center">
-          <Button variant="ghost" size="icon" className="h-7 w-7 rounded-none hover:bg-secondary/50" onClick={(e) => { e.stopPropagation(); minimizeWindow(instance.id); }} aria-label="Minimize">
+          <Button variant="ghost" size="icon" className="h-8 w-11 rounded-none hover:bg-white/10 dark:hover:bg-white/5 text-foreground" onClick={(e) => { e.stopPropagation(); minimizeWindow(instance.id); }} aria-label="Minimize">
             <Minus size={14} />
           </Button>
-          <Button variant="ghost" size="icon" className="h-7 w-7 rounded-none hover:bg-secondary/50" onClick={(e) => { e.stopPropagation(); toggleMaximizeWindow(instance.id); }} aria-label={instance.isMaximized ? "Restore" : "Maximize"}>
+          <Button variant="ghost" size="icon" className="h-8 w-11 rounded-none hover:bg-white/10 dark:hover:bg-white/5 text-foreground" onClick={(e) => { e.stopPropagation(); toggleMaximizeWindow(instance.id); }} aria-label={instance.isMaximized ? "Restore" : "Maximize"}>
             {instance.isMaximized ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
           </Button>
-          <Button variant="ghost" size="icon" className="h-7 w-7 rounded-none hover:bg-destructive/80 hover:text-destructive-foreground" onClick={(e) => { e.stopPropagation(); closeWindow(instance.id); }} aria-label="Close">
+          <Button variant="ghost" size="icon" className="h-8 w-11 rounded-none hover:bg-destructive hover:text-destructive-foreground text-foreground" onClick={(e) => { e.stopPropagation(); closeWindow(instance.id); }} aria-label="Close">
             <X size={16} />
           </Button>
         </div>
       </div>
-      <div className="flex-grow overflow-auto relative bg-background">
+      <div className="flex-grow overflow-auto relative bg-background p-[15px]"> {/* User CSS: padding: 15px */}
         {instance.content}
       </div>
       {!instance.isMaximized && resizeHandles.map(handle => (
@@ -220,3 +263,4 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
 };
 
 export default WindowComponent;
+

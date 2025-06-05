@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -7,7 +8,7 @@ import { cn } from '@/lib/utils';
 
 interface DesktopIconProps {
   app: AppDefinition;
-  style?: React.CSSProperties;
+  style?: React.CSSProperties; // Keep style prop for potential future use
 }
 
 const DesktopIcon: React.FC<DesktopIconProps> = ({ app, style }) => {
@@ -22,18 +23,26 @@ const DesktopIcon: React.FC<DesktopIconProps> = ({ app, style }) => {
     }
   };
 
+  // User CSS: .desktop-icon { width: 100px (implicitly by grid); height: 120px (implicitly by grid); padding: 10px; }
+  // Icon: font-size: 36px; margin-bottom: 8px;
+  // Span: font-size: 12px; text-shadow: 0 1px 2px rgba(0,0,0,0.5);
   return (
     <div
-      className="flex flex-col items-center justify-center w-24 h-24 p-2 text-center select-none rounded hover:bg-white/10 dark:hover:bg-white/5 focus:bg-white/20 dark:focus:bg-white/10 outline-none focus:ring-1 focus:ring-white/50"
+      className="flex flex-col items-center justify-start w-[100px] h-[120px] p-2.5 text-center select-none rounded-md hover:bg-white/10 dark:hover:bg-white/5 focus:bg-white/20 dark:focus:bg-white/10 outline-none focus:ring-1 focus:ring-white/50"
       onDoubleClick={handleDoubleClick}
-      tabIndex={0} // Make it focusable
-      style={style}
+      tabIndex={0} 
+      style={style} // Apply passed style
       title={`Open ${app.name}`}
     >
-      <div className="mb-1 text-white drop-shadow-md">
+      <div className="mb-2 text-white drop-shadow-md"> {/* mb-2 for 8px margin */}
         {React.cloneElement(app.icon as React.ReactElement, { size: 36 })}
       </div>
-      <span className="text-xs text-white truncate drop-shadow-sm" style={{textShadow: '1px 1px 2px rgba(0,0,0,0.7)'}}>{app.name}</span>
+      <span 
+        className="text-xs text-white" 
+        style={{textShadow: '0 1px 2px rgba(0,0,0,0.5)'}} // Specific text shadow from user CSS
+      >
+        {app.name}
+      </span>
     </div>
   );
 };
