@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useRef, useEffect, KeyboardEvent as ReactKeyboardEvent } from 'react';
@@ -10,7 +11,7 @@ interface TerminalLine {
 }
 
 const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
-  const initialWelcomeMessage = 'FluentFolio Terminal [Version 1.0.0]\n(c) 2024 Firebase Studio. All rights reserved.\nType "help" for a list of commands, or "theme" to toggle theme.';
+  const initialWelcomeMessage = 'FluentFolio Terminal [Version 1.0.0]\nType "help" for a list of commands, or "theme" to toggle theme.';
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1); // -1 means new command, 0 is most recent history item
   const [lines, setLines] = useState<TerminalLine[]>([
@@ -22,7 +23,7 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
   const viewportRef = useRef<HTMLDivElement | null>(null); 
   const hiddenInputRef = useRef<HTMLInputElement>(null);
 
-  const prompt = 'user@fluentfolio:~$ ';
+  const prompt = 'RodrickReborn@fluentfolio:~$ ';
 
   useEffect(() => {
     if (scrollAreaRootRef.current && !viewportRef.current) {
@@ -197,3 +198,4 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
 };
 
 export default TerminalApp;
+
