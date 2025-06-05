@@ -75,7 +75,6 @@ const FutureAdventureItem: React.FC<{ adventure: FutureAdventureCategory, onClic
     >
       <span className="mb-2 text-primary">{React.cloneElement(adventure.icon as React.ReactElement, { size: 32 })}</span>
       <span className="text-xs leading-tight text-foreground">{adventure.name}</span>
-      {/* The gradient overlay div was here and has been removed. */}
     </Button>
   );
 };
@@ -218,16 +217,17 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
 
       {selectedProject && (
          <Dialog open={!!selectedProject} onOpenChange={(isOpen) => !isOpen && setSelectedProject(null)}>
-          <DialogContent className="max-w-3xl w-[90vw] md:w-full acrylic-blur acrylic-light dark:acrylic-dark !bg-card/95 dark:!bg-card/95 p-0 rounded-lg">
-            <ScrollArea className="max-h-[85vh]">
-              <DialogHeader className="p-6 pb-4 border-b border-border/50 sticky top-0 z-10 bg-inherit">
-                <DialogTitle className="text-2xl flex items-center gap-3 text-foreground">
-                  {selectedProject.icon && React.cloneElement(selectedProject.icon as React.ReactElement, { size: 28, className: "text-primary"})}
-                  {selectedProject.title}
-                </DialogTitle>
-                <DialogDescription className="pl-[calc(28px+0.75rem)] text-muted-foreground">{selectedProject.category}</DialogDescription>
-              </DialogHeader>
-              <div className="p-6">
+          <DialogContent className="max-w-3xl w-[90vw] md:w-full acrylic-blur acrylic-light dark:acrylic-dark !bg-card/95 dark:!bg-card/95 p-0 rounded-lg flex flex-col max-h-[85vh]">
+            <DialogHeader className="p-6 pb-4 border-b border-border/50 shrink-0">
+              <DialogTitle className="text-2xl flex items-center gap-3 text-foreground">
+                {selectedProject.icon && React.cloneElement(selectedProject.icon as React.ReactElement, { size: 28, className: "text-primary"})}
+                {selectedProject.title}
+              </DialogTitle>
+              <DialogDescription className="pl-[calc(28px+0.75rem)] text-muted-foreground">{selectedProject.category}</DialogDescription>
+            </DialogHeader>
+            
+            <ScrollArea className="flex-grow min-h-0"> {/* flex-grow and min-h-0 for scroll */}
+              <div className="p-6"> {/* Padding moved inside ScrollArea's content div */}
                 <div className="relative w-full h-56 md:h-72 rounded-md overflow-hidden mb-6 shadow-md">
                   <Image
                     src={selectedProject.imageUrl}
@@ -262,25 +262,26 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
                   </>
                 )}
               </div>
-              <DialogFooter className="p-6 pt-4 border-t border-border/50 sticky bottom-0 z-10 bg-inherit acrylic-blur acrylic-light dark:acrylic-dark">
-                <div className="flex gap-3 w-full justify-center project-links">
-                  {selectedProject.liveDemoUrl && selectedProject.liveDemoUrl !== '#' && (
-                    <Button asChild className="submit-btn demo-btn flex-1 max-w-xs">
-                      <a href={selectedProject.liveDemoUrl} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink size={16} className="mr-2" /> Live Demo
-                      </a>
-                    </Button>
-                  )}
-                  {selectedProject.githubUrl && selectedProject.githubUrl !== '#' && (
-                    <Button asChild variant="outline" className="submit-btn flex-1 max-w-xs border-primary text-primary hover:bg-primary/10">
-                      <a href={selectedProject.githubUrl} target="_blank" rel="noopener noreferrer">
-                        <Github size={16} className="mr-2" /> View Code
-                      </a>
-                    </Button>
-                  )}
-                </div>
-              </DialogFooter>
             </ScrollArea>
+            
+            <DialogFooter className="p-6 pt-4 border-t border-border/50 shrink-0 acrylic-blur acrylic-light dark:acrylic-dark">
+              <div className="flex gap-3 w-full justify-center project-links">
+                {selectedProject.liveDemoUrl && selectedProject.liveDemoUrl !== '#' && (
+                  <Button asChild className="submit-btn demo-btn flex-1 max-w-xs">
+                    <a href={selectedProject.liveDemoUrl} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink size={16} className="mr-2" /> Live Demo
+                    </a>
+                  </Button>
+                )}
+                {selectedProject.githubUrl && selectedProject.githubUrl !== '#' && (
+                  <Button asChild variant="outline" className="submit-btn flex-1 max-w-xs border-primary text-primary hover:bg-primary/10">
+                    <a href={selectedProject.githubUrl} target="_blank" rel="noopener noreferrer">
+                      <Github size={16} className="mr-2" /> View Code
+                    </a>
+                  </Button>
+                )}
+              </div>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       )}
@@ -289,5 +290,3 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
 };
 
 export default ProjectsApp;
-
-    
