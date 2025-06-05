@@ -3,15 +3,15 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { ExternalLink, Github, Info, Maximize } from 'lucide-react'; // Added Maximize
+import { ExternalLink, Github, Info, Maximize, Loader2, Lightbulb } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import type { Project } from '@/types';
+import type { Project, PlaceholderProject } from '@/types'; // Added PlaceholderProject
 import { sampleProjects, futureAdventuresData, type FutureAdventureCategory } from '@/data/projects';
 import { Separator } from '@/components/ui/separator';
-import { useToast } from '@/hooks/use-toast'; // For future adventure notification
+import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 const ProjectCard: React.FC<{ project: Project; onOpenDetail: (project: Project) => void }> = ({ project, onOpenDetail }) => {
@@ -25,12 +25,12 @@ const ProjectCard: React.FC<{ project: Project; onOpenDetail: (project: Project)
       onClick={handleCardActivate}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault(); // Prevent space from scrolling the page if the card itself isn't meant to scroll
+          e.preventDefault();
           handleCardActivate();
         }
       }}
-      role="button" // For accessibility
-      tabIndex={0}   // For accessibility, makes the card focusable and interactive
+      role="button"
+      tabIndex={0}
       title={`View details for ${project.title}`}
     >
       <div className="relative w-full h-40">
@@ -65,12 +65,12 @@ const ProjectCard: React.FC<{ project: Project; onOpenDetail: (project: Project)
   );
 };
 
-const FutureAdventureItem: React.FC<{ adventure: FutureAdventureCategory, onClick: (name: string) => void }> = ({ adventure, onClick }) => {
+const FutureAdventureItem: React.FC<{ adventure: FutureAdventureCategory, onClick: (adventure: FutureAdventureCategory) => void }> = ({ adventure, onClick }) => {
   return (
     <Button
       variant="ghost"
       className="flex flex-col items-center justify-center h-28 p-2 text-center opacity-70 hover:opacity-100 hover:bg-primary/20 dark:hover:bg-primary/10 w-full rounded-md transition-all duration-300 app-item future group"
-      onClick={() => onClick(adventure.fullName)}
+      onClick={() => onClick(adventure)}
       title={adventure.fullName}
     >
       <span className="mb-2 text-primary">{React.cloneElement(adventure.icon as React.ReactElement, { size: 32 })}</span>
@@ -85,14 +85,58 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const { toast } = useToast();
 
-  const handleFutureAdventureClick = (adventureName: string) => {
+  const [singleGeneratedIdea, setSingleGeneratedIdea] = useState<PlaceholderProject | null>(null);
+  const [isGeneratingIdea, setIsGeneratingIdea] = useState(false);
+  const [currentAdventureCategory, setCurrentAdventureCategory] = useState<string | null>(null);
+
+
+  const handleFutureAdventureClick = async (adventure: FutureAdventureCategory) => {
+    setCurrentAdventureCategory(adventure.fullName);
+    setIsGeneratingIdea(true);
+    setSingleGeneratedIdea(null); 
+
     toast({
-        title: "Future Adventure!",
-        description: `Exploring ideas for: ${adventureName}`,
-        variant: "default",
-        className: "notification future"
+      title: `Exploring ${adventure.name}...`,
+      description: `Generating an idea for ${adventure.fullName}.`,
+      className: "notification future" 
     });
-    console.log(`Clicked on Future Adventure: ${adventureName}`);
+
+    try {
+      const response = await fetch('/api/generate-projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category: adventure.fullName, numProjects: 1 }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.details || `Failed to generate idea (status: ${response.status})`);
+      }
+
+      const data = await response.json();
+      if (data.projects && data.projects.length > 0) {
+        setSingleGeneratedIdea(data.projects[0]);
+        toast({
+          title: "Idea Sparked!",
+          description: `Here's an idea for ${adventure.fullName}.`,
+          className: "notification future"
+        });
+      } else {
+        toast({
+          title: "Hmm...",
+          description: `The AI couldn't conjure an idea for ${adventure.fullName} right now.`,
+          variant: "default"
+        });
+        setSingleGeneratedIdea(null);
+      }
+    } catch (error) {
+      console.error("Error generating single project idea:", error);
+      const message = error instanceof Error ? error.message : "An unknown error occurred.";
+      toast({ title: "Idea Generation Failed", description: message, variant: "destructive" });
+      setSingleGeneratedIdea(null);
+    } finally {
+      setIsGeneratingIdea(false);
+    }
   };
 
   return (
@@ -101,7 +145,7 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
         <h1 className="text-xl font-semibold text-foreground">My Projects</h1>
         <p className="text-sm text-muted-foreground">Click on a project card to view details.</p>
       </header>
-      <ScrollArea className="flex-grow pr-1"> {/* Main scroll area for project list and future adventures */}
+      <ScrollArea className="flex-grow pr-1">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-5">
           {sampleProjects.map(project => (
             <ProjectCard key={project.id} project={project} onOpenDetail={setSelectedProject} />
@@ -112,19 +156,70 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
 
         <div>
           <h3 className="text-lg font-semibold mb-1 text-foreground">Future Adventures</h3>
-          <p className="text-sm text-muted-foreground mb-4">Areas I'm excited to explore next:</p>
+          <p className="text-sm text-muted-foreground mb-4">Areas I'm excited to explore next (click to spark an AI-generated idea!):</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-5">
             {futureAdventuresData.map(adventure => (
               <FutureAdventureItem key={adventure.id} adventure={adventure} onClick={handleFutureAdventureClick} />
             ))}
           </div>
         </div>
+
+        {/* Display Area for Single Generated Idea */}
+        <div className="mt-8">
+          {isGeneratingIdea && currentAdventureCategory && (
+            <div className="flex flex-col items-center justify-center p-6 bg-muted/30 dark:bg-muted/20 rounded-lg min-h-[150px]">
+              <Loader2 size={32} className="animate-spin text-primary mb-3" />
+              <p className="text-sm text-muted-foreground">Sparking an idea for {currentAdventureCategory}...</p>
+            </div>
+          )}
+          {!isGeneratingIdea && singleGeneratedIdea && currentAdventureCategory && (
+            <div>
+              <h4 className="text-md font-semibold mb-3 text-foreground flex items-center">
+                <Lightbulb size={18} className="mr-2 text-primary" />
+                AI-Sparked Idea for: {currentAdventureCategory}
+              </h4>
+              <Card className="bg-card/80 dark:bg-card/80 acrylic-blur acrylic-light dark:acrylic-dark">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-md">{singleGeneratedIdea.title}</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <p className="text-xs text-muted-foreground mb-3 h-12 overflow-hidden text-ellipsis">{singleGeneratedIdea.description}</p>
+                  <div className="mt-2">
+                    <h5 className="text-xs font-semibold mb-1 text-primary/90">Potential Tech:</h5>
+                    <div className="flex flex-wrap gap-1">
+                      {singleGeneratedIdea.technologyStack.map(tech => (
+                        <span key={tech} className="text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{tech}</span>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <p className="text-xs text-muted-foreground italic w-full truncate">Image prompt hint: {singleGeneratedIdea.imagePrompt}</p>
+                </CardFooter>
+              </Card>
+            </div>
+          )}
+          {!isGeneratingIdea && !singleGeneratedIdea && currentAdventureCategory && (
+             <div className="text-center p-6 bg-muted/30 dark:bg-muted/20 rounded-lg min-h-[100px] flex flex-col justify-center items-center">
+                <h4 className="text-md font-semibold mb-2 text-foreground">
+                    For: {currentAdventureCategory}
+                </h4>
+                <p className="text-sm text-muted-foreground">No specific idea generated this time, or the AI is pondering. Try another adventure or try again later!</p>
+            </div>
+          )}
+           {!currentAdventureCategory && !isGeneratingIdea && (
+            <div className="text-center p-4 text-muted-foreground mt-4">
+              <Lightbulb size={24} className="mx-auto mb-2 text-primary/70" />
+              Click an adventure above to spark a unique project idea!
+            </div>
+          )}
+        </div>
       </ScrollArea>
 
       {selectedProject && (
          <Dialog open={!!selectedProject} onOpenChange={(isOpen) => !isOpen && setSelectedProject(null)}>
           <DialogContent className="max-w-3xl w-[90vw] md:w-full acrylic-blur acrylic-light dark:acrylic-dark !bg-card/95 dark:!bg-card/95 p-0 rounded-lg">
-            <ScrollArea className="max-h-[85vh]"> {/* Scroll area for dialog content */}
+            <ScrollArea className="max-h-[85vh]">
               <DialogHeader className="p-6 pb-4 border-b border-border/50 sticky top-0 z-10 bg-inherit">
                 <DialogTitle className="text-2xl flex items-center gap-3 text-foreground">
                   {selectedProject.icon && React.cloneElement(selectedProject.icon as React.ReactElement, { size: 28, className: "text-primary"})}
@@ -184,7 +279,6 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
                     </Button>
                   )}
                 </div>
-                {/* Removed custom absolute positioned close button from here */}
               </DialogFooter>
             </ScrollArea>
           </DialogContent>
@@ -195,4 +289,3 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
 };
 
 export default ProjectsApp;
-
