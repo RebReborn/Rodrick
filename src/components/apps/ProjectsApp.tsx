@@ -226,45 +226,43 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
               <DialogDescription className="pl-[calc(28px+0.75rem)] text-muted-foreground">{selectedProject.category}</DialogDescription>
             </DialogHeader>
             
-            <div className="flex-grow min-h-0 relative"> {/* This div manages flex sizing for ScrollArea */}
-              <ScrollArea className="absolute inset-0"> {/* ScrollArea fills the wrapper */}
-                <div className="p-6"> {/* Padding is now inside the ScrollArea's direct child */}
-                  <div className="relative w-full h-56 md:h-72 rounded-md overflow-hidden mb-6 shadow-md">
-                    <Image
-                      src={selectedProject.imageUrl}
-                      alt={selectedProject.title}
-                      layout="fill"
-                      objectFit="cover"
-                      data-ai-hint={selectedProject.imageHint || "project image"}
-                      loading="lazy" className="opacity-0 transition-opacity duration-300 loaded:opacity-100"
-                      onLoad={(e) => e.currentTarget.classList.add('loaded')}
-                    />
-                  </div>
-                  <div className="project-details text-foreground/90 text-sm leading-relaxed mb-6" dangerouslySetInnerHTML={{ __html: selectedProject.longDescription?.replace(/\n/g, '<br />') || selectedProject.description }} />
-
-                  <h3 className="font-semibold mb-2 text-foreground">Technologies Used:</h3>
-                  <div className="flex flex-wrap gap-2 mb-6 tech-stack">
-                    {selectedProject.technologies.map(tech => (
-                      <span key={tech} className="text-xs bg-primary/20 text-primary-foreground dark:text-primary px-[10px] py-[5px] rounded-[15px] tech-item">{tech}</span>
-                    ))}
-                  </div>
-
-                  {selectedProject.screenshots && selectedProject.screenshots.length > 0 && (
-                    <>
-                      <h3 className="font-semibold mb-3 text-foreground">Screenshots:</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 project-screenshots">
-                        {selectedProject.screenshots.map((ss, idx) => (
-                          <div key={idx} className="rounded-md overflow-hidden border border-border/20 shadow-md screenshot">
-                             <Image src={ss.url} alt={ss.caption || `Screenshot ${idx+1}`} width={600} height={400} objectFit="cover" data-ai-hint={ss.hint || "application screenshot"} loading="lazy" className="opacity-0 transition-opacity duration-300 loaded:opacity-100" onLoad={(e) => e.currentTarget.classList.add('loaded')} />
-                             {ss.caption && <p className="text-xs text-center p-1.5 bg-muted/50 text-muted-foreground">{ss.caption}</p>}
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
+            <ScrollArea className="flex-grow min-h-0"> {/* ScrollArea is now the direct flex-grow child */}
+              <div className="p-6"> {/* Padding is inside the ScrollArea's direct child */}
+                <div className="relative w-full h-56 md:h-72 rounded-md overflow-hidden mb-6 shadow-md">
+                  <Image
+                    src={selectedProject.imageUrl}
+                    alt={selectedProject.title}
+                    layout="fill"
+                    objectFit="cover"
+                    data-ai-hint={selectedProject.imageHint || "project image"}
+                    loading="lazy" className="opacity-0 transition-opacity duration-300 loaded:opacity-100"
+                    onLoad={(e) => e.currentTarget.classList.add('loaded')}
+                  />
                 </div>
-              </ScrollArea>
-            </div>
+                <div className="project-details text-foreground/90 text-sm leading-relaxed mb-6" dangerouslySetInnerHTML={{ __html: selectedProject.longDescription?.replace(/\n/g, '<br />') || selectedProject.description }} />
+
+                <h3 className="font-semibold mb-2 text-foreground">Technologies Used:</h3>
+                <div className="flex flex-wrap gap-2 mb-6 tech-stack">
+                  {selectedProject.technologies.map(tech => (
+                    <span key={tech} className="text-xs bg-primary/20 text-primary-foreground dark:text-primary px-[10px] py-[5px] rounded-[15px] tech-item">{tech}</span>
+                  ))}
+                </div>
+
+                {selectedProject.screenshots && selectedProject.screenshots.length > 0 && (
+                  <>
+                    <h3 className="font-semibold mb-3 text-foreground">Screenshots:</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 project-screenshots">
+                      {selectedProject.screenshots.map((ss, idx) => (
+                        <div key={idx} className="rounded-md overflow-hidden border border-border/20 shadow-md screenshot">
+                           <Image src={ss.url} alt={ss.caption || `Screenshot ${idx+1}`} width={600} height={400} objectFit="cover" data-ai-hint={ss.hint || "application screenshot"} loading="lazy" className="opacity-0 transition-opacity duration-300 loaded:opacity-100" onLoad={(e) => e.currentTarget.classList.add('loaded')} />
+                           {ss.caption && <p className="text-xs text-center p-1.5 bg-muted/50 text-muted-foreground">{ss.caption}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            </ScrollArea>
             
             <DialogFooter className="p-6 pt-4 border-t border-border/50 shrink-0 acrylic-blur acrylic-light dark:acrylic-dark">
               <div className="flex gap-3 w-full justify-center project-links">
@@ -292,4 +290,3 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
 };
 
 export default ProjectsApp;
-

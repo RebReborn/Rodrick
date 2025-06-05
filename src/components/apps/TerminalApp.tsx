@@ -15,10 +15,15 @@ interface Theme {
   background: string;
   foreground: string;
   cursor: string;
+  selection: string;
+  accent: string;
 }
 
 const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
-  const initialWelcomeMessage = 'Reborn Terminal [Version 1.0.1]\nType "help" for a list of commands, or "theme" to cycle themes.';
+  const initialWelcomeMessage = `Reborn Terminal [Version 1.1.0]
+Type "help" for a list of commands, or "theme" to cycle themes.
+Current user: Rodrick`;
+
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [lines, setLines] = useState<TerminalLine[]>([
@@ -30,31 +35,63 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
   const [envVars, setEnvVars] = useState<Record<string, string>>({ USER: 'Rodrick' });
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+  const [showHelpTooltip, setShowHelpTooltip] = useState(true);
 
   const scrollAreaRootRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
+  const terminalContainerRef = useRef<HTMLDivElement>(null);
 
   const prompt = `${envVars.USER || 'user'}@Reborn:~$ `;
-  
+
   const themes: Theme[] = [
-    { name: 'Classic Green', background: 'black', foreground: '#4ade80', cursor: '#4ade80' },
-    { name: 'Matrix Blue', background: '#0f172a', foreground: '#93c5fd', cursor: '#93c5fd' },
-    { name: 'Solarized Dark', background: '#002b36', foreground: '#839496', cursor: '#2aa198' },
-    { name: 'Light', background: '#f5f5f5', foreground: '#333333', cursor: '#333333' },
+    { 
+      name: 'Classic Green', 
+      background: 'black', 
+      foreground: '#4ade80', 
+      cursor: '#4ade80',
+      selection: 'rgba(74, 222, 128, 0.3)',
+      accent: '#4ade80'
+    },
+    { 
+      name: 'Matrix Blue', 
+      background: '#0f172a', 
+      foreground: '#93c5fd', 
+      cursor: '#93c5fd',
+      selection: 'rgba(147, 197, 253, 0.3)',
+      accent: '#93c5fd'
+    },
+    { 
+      name: 'Solarized Dark', 
+      background: '#002b36', 
+      foreground: '#839496', 
+      cursor: '#2aa198',
+      selection: 'rgba(42, 161, 152, 0.3)',
+      accent: '#2aa198'
+    },
+    { 
+      name: 'Light', 
+      background: '#f5f5f5', 
+      foreground: '#333333', 
+      cursor: '#333333',
+      selection: 'rgba(51, 51, 51, 0.2)',
+      accent: '#3b82f6'
+    },
   ];
 
   const commands = {
     help: () => ({
-      output: 'Available commands:\n' +
-        '  help     - Show this help message\n' +
-        '  clear    - Clear the terminal screen (Ctrl+L)\n' +
-        '  date     - Display the current date and time\n' +
-        '  echo     - Display a line of text\n' +
-        '  theme    - Cycle through terminal themes\n' +
-        '  set      - Set environment variable (set NAME=VALUE)\n' +
-        '  env      - List all environment variables\n' +
-        '  whoami   - Display current user',
+      output: `Available commands:
+  help     - Show this help message
+  clear    - Clear the terminal screen (Ctrl+L)
+  date     - Display the current date and time
+  echo     - Display a line of text
+  theme    - Cycle through terminal themes
+  set      - Set environment variable (set NAME=VALUE)
+  env      - List all environment variables
+  whoami   - Display current user
+  history  - Show command history
+  search   - Search command history (Ctrl+R)`,
     }),
     clear: () => ({ output: initialWelcomeMessage, clear: true }),
     date: () => ({ output: new Date().toLocaleString() }),
@@ -74,6 +111,12 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
     },
     env: () => ({ output: Object.entries(envVars).map(([k, v]) => `${k}=${v}`).join('\n') }),
     whoami: () => ({ output: envVars.USER || 'user' }),
+    history: () => ({ output: history.map((cmd, i) => `${i + 1}  ${cmd}`).join('\n') || 'No commands in history' }),
+    search: () => {
+      setIsSearching(true);
+      setSearchQuery('');
+      return { output: 'Enter search term (Ctrl+R to cancel)' };
+    },
   };
 
   const commandAliases: Record<string, string> = {
@@ -81,6 +124,8 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
     dt: 'date',
     print: 'echo',
     who: 'whoami',
+    hist: 'history',
+    find: 'search',
   };
 
   const availableCommands = [...Object.keys(commands), ...Object.keys(commandAliases)];
@@ -102,6 +147,13 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
 
   useEffect(() => {
     hiddenInputRef.current?.focus();
+    
+    // Hide help tooltip after 5 seconds
+    const timer = setTimeout(() => {
+      setShowHelpTooltip(false);
+    }, 5000);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,7 +166,7 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
   const autoComplete = (input: string): string => {
     const inputLower = input.toLowerCase().trim();
     if (!inputLower) return input;
-    
+
     const matches = availableCommands.filter(cmd => cmd.startsWith(inputLower));
     if (matches.length === 1) {
       return matches[0];
@@ -124,6 +176,7 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
         id: `line-${Date.now()}-output`,
         type: 'output',
         text: `Possible completions: ${matches.join(', ')}`,
+        timestamp: 0,
       }]);
       return input;
     }
@@ -133,7 +186,7 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
   const processCommand = async (command: string) => {
     setIsProcessing(true);
     const startTime = Date.now();
-    
+
     let commandToProcess = command.trim();
     const parts = commandToProcess.split(' ');
     const cmd = parts[0].toLowerCase();
@@ -145,7 +198,7 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
     try {
       const commandFunc = commands[actualCommand as keyof typeof commands];
       if (!commandFunc) {
-        throw new Error(`command not found: ${commandToProcess}`);
+        throw new Error(`Command not found: ${commandToProcess}. Type "help" for available commands.`);
       }
 
       const result = commandFunc(args);
@@ -224,7 +277,7 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
       setCurrentInput(autoComplete(currentInput));
     } else if (e.key === 'r' && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
-      setIsSearching(true);
+      setIsSearching(!isSearching);
       setSearchQuery('');
       setCurrentInput('');
     } else if (e.key === 'l' && (e.ctrlKey || e.metaKey)) {
@@ -233,6 +286,13 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
       setCurrentInput('');
       setIsSearching(false);
       setSearchQuery('');
+    } else if (e.key === 'Escape') {
+      if (isSearching) {
+        e.preventDefault();
+        setIsSearching(false);
+        setSearchQuery('');
+        setCurrentInput('');
+      }
     }
   };
 
@@ -240,15 +300,19 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
     ? history.filter(cmd => cmd.toLowerCase().includes(searchQuery.toLowerCase()))
     : history;
 
+  const currentTheme = themes[currentThemeIndex];
+
   return (
     <div
-      className="terminal-container h-full flex flex-col font-code text-sm select-text p-2"
+      ref={terminalContainerRef}
+      className="terminal-container h-full flex flex-col font-mono text-sm select-text p-2 relative"
       style={{
-        backgroundColor: themes[currentThemeIndex].background,
-        color: themes[currentThemeIndex].foreground,
+        backgroundColor: currentTheme.background,
+        color: currentTheme.foreground,
       }}
       onClick={() => hiddenInputRef.current?.focus()}
     >
+      {/* Hidden input for capturing keyboard events */}
       <input
         ref={hiddenInputRef}
         type="text"
@@ -263,17 +327,57 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
         disabled={isProcessing}
       />
       
-      <ScrollArea className="flex-grow" ref={scrollAreaRootRef}>
-        <div className="h-full">
+      {/* Help tooltip that disappears after first interaction */}
+      {showHelpTooltip && (
+        <div 
+          className="absolute top-2 right-2 bg-black bg-opacity-70 text-xs text-white px-2 py-1 rounded z-10"
+          style={{ borderColor: currentTheme.accent }}
+        >
+          Press Ctrl+R to search history
+        </div>
+      )}
+
+      {/* Status bar */}
+      <div 
+        className="flex justify-between items-center text-xs mb-1 opacity-70"
+        style={{ color: currentTheme.accent }}
+      >
+        <span>Terminal v1.1.0</span>
+        <span>{currentTheme.name}</span>
+      </div>
+
+      {/* Terminal content */}
+      <ScrollArea 
+        className="flex-grow rounded-sm"
+        ref={scrollAreaRootRef}
+        style={{
+          backgroundColor: currentTheme.background,
+          // @ts-ignore - CSS custom properties
+          '--scrollbar-thumb-color': currentTheme.accent + '80',
+        }}
+      >
+        <div className="h-full p-1">
           {lines.map((line) => (
-            <div key={line.id} className="whitespace-pre-wrap break-words leading-normal">
+            <div 
+              key={line.id} 
+              className="whitespace-pre-wrap break-words leading-normal mb-1"
+            >
               {line.type === 'input' ? (
                 <span className="text-inherit">{line.text}</span>
               ) : (
-                line.text.split('\n').map((subLine, idx) => (
-                  <div key={idx} className={line.type === 'error' ? 'text-red-400' : 'text-inherit'}>
+                line.text.split('\n').map((subLine, idx, arr) => (
+                  <div 
+                    key={idx} 
+                    className={
+                      line.type === 'error' 
+                        ? 'text-red-400' 
+                        : idx === 0 && line.text === initialWelcomeMessage 
+                          ? 'text-blue-300' 
+                          : 'text-inherit'
+                    }
+                  >
                     {subLine}
-                    {line.timestamp && idx === 0 && (
+                    {typeof line.timestamp === 'number' && idx === arr.length - 1 && line.timestamp > 0 && (
                       <span className="text-xs opacity-60 ml-2">
                         [{line.timestamp}ms]
                       </span>
@@ -283,21 +387,32 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
               )}
             </div>
           ))}
+          
+          {/* Search mode indicator */}
           {isSearching && (
-            <div className="text-yellow-400">
-              (reverse-i-search)`{searchQuery}`: {filteredHistory[0] || ''}
+            <div className="text-yellow-300 mb-1">
+              (reverse-i-search)`{searchQuery}`: {filteredHistory[0] || 'no matches'}
             </div>
           )}
+          
+          {/* Current input line */}
           <div className="flex items-center leading-normal">
-            <span className="text-inherit mr-1">{prompt}</span>
+            <span 
+              className="font-bold mr-1"
+              style={{ color: currentTheme.accent }}
+            >
+              {prompt}
+            </span>
             <span className="text-inherit">{currentInput}</span>
             <span
               className="cursor-block inline-block w-[0.5em] h-[1.2em] align-middle animate-blink ml-0.5"
-              style={{ backgroundColor: themes[currentThemeIndex].cursor }}
+              style={{ backgroundColor: currentTheme.cursor }}
             ></span>
           </div>
         </div>
       </ScrollArea>
+
+      {/* Global styles for the terminal */}
       <style jsx global>{`
         @keyframes blink {
           0%, 100% { opacity: 1; }
@@ -305,6 +420,13 @@ const TerminalApp: React.FC<{ windowId: string; appKey: string }> = () => {
         }
         .animate-blink {
           animation: blink 1s step-end infinite;
+        }
+        ::selection {
+          background-color: ${currentTheme.selection};
+          color: inherit;
+        }
+        [data-radix-scroll-area-viewport] {
+          scrollbar-width: thin;
         }
       `}</style>
     </div>
