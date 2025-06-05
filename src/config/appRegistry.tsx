@@ -1,5 +1,5 @@
 import type React from 'react';
-import { LayoutGrid, User, Mail, FileText, Camera, Package, Zap, BarChart3, Brain, Palette, Server, ShieldAlert, Settings, Code } from 'lucide-react';
+import { Folder, User, Mail, FileText, Camera, Smartphone, Gamepad2, Zap, BarChart3, Brain, Palette, Server, ShieldAlert, Settings, Code } from 'lucide-react';
 import type { AppDefinition } from '@/types';
 
 // Placeholders for App Components - These will be created next
@@ -23,7 +23,7 @@ export const appRegistry: AppDefinition[] = [
   {
     key: 'projects',
     name: 'Projects',
-    icon: <LayoutGrid />,
+    icon: <Folder />,
     defaultSize: { width: 800, height: 600 },
     minSize: { width: 400, height: 300 },
     isResizable: true,
@@ -94,13 +94,13 @@ export const appRegistry: AppDefinition[] = [
    {
     key: 'mobileDev',
     name: 'Mobile Apps',
-    icon: <Zap />, // Using Zap for Mobile, could be Smartphone icon if available
+    icon: <Smartphone />, 
     component: (props) => <PlaceholderAppComponent {...props} />,
   },
   {
     key: 'gameDev',
     name: 'Game Dev',
-    icon: <Package />, // Using Package for Game Dev, could be Gamepad icon
+    icon: <Gamepad2 />, 
     component: (props) => <PlaceholderAppComponent {...props} />,
   },
   {
