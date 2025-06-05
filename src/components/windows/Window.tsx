@@ -1,7 +1,7 @@
 
 "use client";
 
-import type React from 'react';
+import React from 'react'; // Changed from 'import type React'
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { X, Minus, Maximize2, Minimize2 } from 'lucide-react';
 import { useWindowManager } from '@/contexts/WindowManagerContext';
@@ -263,4 +263,5 @@ const WindowComponent: React.FC<WindowProps> = ({ instance }) => {
 };
 
 export default WindowComponent;
+
 
