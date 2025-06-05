@@ -1,6 +1,6 @@
 
 import type React from 'react';
-import { Folder, User, Mail, FileText, Camera, Smartphone, Gamepad2, Zap, BarChart3, Brain, Palette, Server, ShieldAlert, Settings, Code } from 'lucide-react';
+import { Folder, User, Mail, FileText, Camera, Smartphone, Gamepad2, Zap, BarChart3, Brain, Palette, Server, ShieldAlert, Settings, Code, Globe } from 'lucide-react';
 import type { AppDefinition } from '@/types';
 
 // Import actual app components
@@ -15,8 +15,8 @@ import TerminalApp from '@/components/apps/TerminalApp'; // Import the new Termi
 // Placeholder for other apps not yet fully implemented
 const PlaceholderAppComponent = ({ windowId, appKey }: { windowId: string, appKey: string }) => (
   <div className="p-4 h-full flex flex-col items-center justify-center bg-background">
-    <h2 className="text-2xl font-semibold mb-2">{appKey.charAt(0).toUpperCase() + appKey.slice(1)}</h2>
-    <p className="text-muted-foreground">Content for {appKey} (Window ID: {windowId})</p>
+    <h2 className="text-2xl font-semibold mb-2">{appKey.charAt(0).toUpperCase() + appKey.slice(1).replace(/([A-Z])/g, ' $1').trim()}</h2>
+    <p className="text-muted-foreground">Content for {appKey.replace(/([A-Z])/g, ' $1').trim()} (Window ID: {windowId})</p>
     <p className="text-xs mt-4">Component: <code>src/components/apps/{appKey.charAt(0).toUpperCase() + appKey.slice(1)}App.tsx</code></p>
   </div>
 );
@@ -82,9 +82,18 @@ export const appRegistry: AppDefinition[] = [
     name: 'Terminal',
     icon: <Code />,
     defaultSize: { width: 600, height: 400 },
-    minSize: { width: 400, height: 300 }, // Slightly increased min size for better usability
+    minSize: { width: 400, height: 300 }, 
     isResizable: true,
-    component: TerminalApp, // Use the new TerminalApp
+    component: TerminalApp, 
+  },
+  {
+    key: 'chromeBrowser',
+    name: 'Google Chrome',
+    icon: <Globe />,
+    defaultSize: { width: 1024, height: 768 },
+    minSize: { width: 400, height: 300 },
+    isResizable: true,
+    component: (props) => <PlaceholderAppComponent {...props} />,
   },
   {
     key: 'settingsApp', 
@@ -116,8 +125,8 @@ export const appRegistry: AppDefinition[] = [
     component: (props) => <PlaceholderAppComponent {...props} />,
   },
   {
-    key: 'aiProjectsAppDef', // Renamed to avoid confusion with FutureProjectsApp which is AI-powered
-    name: 'AI Sandbox', // Changed name for clarity
+    key: 'aiProjectsAppDef', 
+    name: 'AI Sandbox', 
     icon: <Brain />,
     defaultSize: { width: 600, height: 500},
     component: (props) => <PlaceholderAppComponent {...props} />,
@@ -144,3 +153,4 @@ export const appRegistry: AppDefinition[] = [
     component: (props) => <PlaceholderAppComponent {...props} />,
   },
 ];
+

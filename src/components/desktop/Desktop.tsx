@@ -13,7 +13,7 @@ const Desktop: React.FC = () => {
   const { windows } = useWindowManager();
 
   const desktopApps = appRegistry.filter(app => 
-    ['projects', 'about', 'resume', 'photography', 'contact', 'terminal', 'futureProjects'].includes(app.key)
+    ['projects', 'about', 'resume', 'photography', 'contact', 'terminal', 'futureProjects', 'chromeBrowser'].includes(app.key)
   );
 
   return (
