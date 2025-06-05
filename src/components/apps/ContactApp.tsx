@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react'; // Updated from useFormState
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import { submitContactForm, type ContactFormState } from '@/app/contact/actions';
 import { Send, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils'; // Added import for cn
 
 const initialState: ContactFormState = {
   message: "",
@@ -18,7 +19,7 @@ const initialState: ContactFormState = {
 };
 
 function SubmitButton() {
-  const { pending } = useFormStatus();
+  const { pending } = useActionState(async () => {}, null); // useActionState requires an async action, using a no-op here to get pending state
   // User CSS: .submit-btn
   return (
     <Button type="submit" disabled={pending} className="w-full submit-btn bg-primary hover:bg-primary/90 text-primary-foreground">
@@ -29,7 +30,7 @@ function SubmitButton() {
 }
 
 const ContactApp: React.FC<{ windowId: string; appKey: string }> = () => {
-  const [state, formAction] = useFormState(submitContactForm, initialState);
+  const [state, formAction] = useActionState(submitContactForm, initialState);
   const { toast } = useToast();
   const formRef = React.useRef<HTMLFormElement>(null);
 
