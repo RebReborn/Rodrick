@@ -23,6 +23,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com', // Added this line
+        port: '',
+        pathname: '/**',
+      },
       // Add other image hostnames here if needed for actual projects
       // {
       //   protocol: 'https',
