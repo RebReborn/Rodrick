@@ -1,5 +1,13 @@
+
 "use server";
 
+// This file is no longer used for the primary contact form submission
+// as it's now handled client-side via Formspree in ContactApp.tsx.
+// You can keep this file for other potential server actions related to contacts
+// or remove it if it's completely unused.
+
+// Example of what might have been here (now removed):
+/*
 import { z } from 'zod';
 
 const ContactFormSchema = z.object({
@@ -20,38 +28,11 @@ export async function submitContactForm(
   prevState: ContactFormState,
   formData: FormData
 ): Promise<ContactFormState> {
-  const name = formData.get('name') as string;
-  const email = formData.get('email') as string;
-  const subject = formData.get('subject') as string;
-  const message = formData.get('message') as string;
-
-  const validatedFields = ContactFormSchema.safeParse({
-    name,
-    email,
-    subject,
-    message,
-  });
-
-  if (!validatedFields.success) {
-    const issues = validatedFields.error.issues.map((issue) => issue.message);
-    return {
-      message: "Validation failed. Please check your input.",
-      fields: { name, email, subject, message },
-      issues,
-      isSuccess: false,
-    };
-  }
-
-  // Simulate form submission (e.g., send email, save to database)
-  console.log("Contact form submitted:", validatedFields.data);
-  
-  // In a real app, you would integrate with an email service or backend API here.
-  // For now, we'll just simulate success.
-  await new Promise(resolve => setTimeout(resolve, 1000));
-
-
-  return {
-    message: "Thank you for your message! I'll get back to you soon.",
-    isSuccess: true,
-  };
+  // ... old logic ...
+  return { message: "This server action is no longer active.", isSuccess: false };
 }
+*/
+
+// If you have no other server actions for contacts, this file can be deleted.
+// For now, I'm leaving it with comments indicating its status.
+// If you need new server actions related to contacts in the future, you can add them here.

@@ -1,99 +1,184 @@
 
 "use client";
 
-import React, { useEffect } from 'react';
-import { useActionState } from 'react'; // Updated from useFormState
+import React, { useState, useEffect, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useToast } from '@/hooks/use-toast';
-import { submitContactForm, type ContactFormState } from '@/app/contact/actions';
 import { Send, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils'; // Added import for cn
-
-const initialState: ContactFormState = {
-  message: "",
-  isSuccess: false,
-};
-
-function SubmitButton() {
-  const { pending } = useActionState(async () => {}, null); // useActionState requires an async action, using a no-op here to get pending state
-  // User CSS: .submit-btn
-  return (
-    <Button type="submit" disabled={pending} className="w-full submit-btn bg-primary hover:bg-primary/90 text-primary-foreground">
-      {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
-      Send Message
-    </Button>
-  );
-}
+import { cn } from '@/lib/utils';
 
 const ContactApp: React.FC<{ windowId: string; appKey: string }> = () => {
-  const [state, formAction] = useActionState(submitContactForm, initialState);
-  const { toast } = useToast();
-  const formRef = React.useRef<HTMLFormElement>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '', // Kept subject field as it was in original app
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  useEffect(() => {
-    if (state.message) {
-      toast({
-        title: state.isSuccess ? "Success!" : "Error",
-        description: state.message,
-        variant: state.isSuccess ? "default" : "destructive",
-        // className: state.isSuccess ? "notification success" : "notification destructive" // For custom notification style
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitSuccess(false);
+    setSubmitError(null);
+  
+    try {
+      const response = await fetch('https://formspree.io/f/xanepngl', { // Your Formspree endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json' // Recommended by Formspree
+        },
+        body: JSON.stringify(formData)
       });
-      if (state.isSuccess && formRef.current) {
-        formRef.current.reset();
+  
+      if (response.ok) {
+        setSubmitSuccess(true);
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        if (formRef.current) {
+            formRef.current.reset();
+        }
+        setTimeout(() => setSubmitSuccess(false), 5000); // Hide success message after 5s
+      } else {
+        const errorData = await response.json();
+        const errorMessage = errorData.errors?.map((err: any) => err.message).join(', ') || 'Submission failed. Please try again.';
+        setSubmitError(errorMessage);
+        console.error('Submission failed:', errorData);
       }
+    } catch (error) {
+      setSubmitError('An error occurred while submitting the form. Please check your connection and try again.');
+      console.error('Error submitting form', error);
     }
-  }, [state, toast]);
+  
+    setIsSubmitting(false);
+  };
 
-  // User CSS: .contact-form, .form-group, input/textarea styles
-  // input/textarea: width: 100%; padding: 8px 12px; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; background-color: rgba(255,255,255,0.05); color: white;
-  // This maps to: dark:border-white/10 dark:bg-black/5 dark:text-white. Light theme will use defaults or need explicit light version.
-  const inputStyles = "mt-1 bg-white/5 dark:bg-black/10 border-black/10 dark:border-white/10 text-foreground placeholder:text-muted-foreground rounded focus:border-primary";
+  const inputStyles = "mt-1 bg-card border-border text-foreground placeholder:text-muted-foreground rounded focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary";
 
   return (
-    <div className="h-full flex flex-col bg-transparent text-foreground"> {/* Window itself has padding now */}
-      <header className="p-0 mb-4">
-        <h1 className="text-xl font-semibold">Get In Touch</h1>
-        <p className="text-sm text-muted-foreground">I'd love to hear from you! Drop me a message below.</p>
+    <div className="h-full flex flex-col bg-transparent text-foreground">
+      <header className="p-0 mb-4 text-center">
+        <h1 className="text-2xl md:text-3xl font-bold mb-2 text-primary">
+            Let's Connect
+        </h1>
+        <p className="text-sm text-muted-foreground max-w-md mx-auto">
+          Have a project in mind or want to discuss opportunities? Reach out and let's create something amazing together.
+        </p>
       </header>
       <ScrollArea className="flex-grow pr-1">
-        {/* User CSS: grid grid-cols-2 gap-15px */}
-        <form action={formAction} ref={formRef} className="space-y-4 contact-form md:grid md:grid-cols-2 md:gap-x-[15px] md:gap-y-0 md:space-y-0">
-          <div className="form-group md:mb-[15px]"> {/* Matched class for potential global styles */}
-            <Label htmlFor="name" className="block mb-1 text-sm">Full Name</Label>
-            <Input id="name" name="name" type="text" placeholder="John Doe" required className={inputStyles}/>
-            {state.issues && state.issues.find(issue => issue.toLowerCase().includes('name')) && (
-              <p className="text-xs text-destructive mt-1">{state.issues.find(issue => issue.toLowerCase().includes('name'))}</p>
-            )}
-          </div>
-          <div className="form-group md:mb-[15px]">
-            <Label htmlFor="email" className="block mb-1 text-sm">Email Address</Label>
-            <Input id="email" name="email" type="email" placeholder="john.doe@example.com" required className={inputStyles}/>
-             {state.issues && state.issues.find(issue => issue.toLowerCase().includes('email')) && (
-              <p className="text-xs text-destructive mt-1">{state.issues.find(issue => issue.toLowerCase().includes('email'))}</p>
-            )}
-          </div>
-          <div className="form-group full-width md:col-span-2 md:mb-[15px]">
-            <Label htmlFor="subject" className="block mb-1 text-sm">Subject</Label>
-            <Input id="subject" name="subject" type="text" placeholder="Project Inquiry" required className={inputStyles}/>
-            {state.issues && state.issues.find(issue => issue.toLowerCase().includes('subject')) && (
-              <p className="text-xs text-destructive mt-1">{state.issues.find(issue => issue.toLowerCase().includes('subject'))}</p>
-            )}
-          </div>
-          <div className="form-group full-width md:col-span-2 md:mb-[15px]">
-            <Label htmlFor="message" className="block mb-1 text-sm">Message</Label>
-            <Textarea id="message" name="message" placeholder="Your message here..." rows={5} required className={cn(inputStyles, "min-h-[100px]")}/>
-            {state.issues && state.issues.find(issue => issue.toLowerCase().includes('message')) && (
-              <p className="text-xs text-destructive mt-1">{state.issues.find(issue => issue.toLowerCase().includes('message'))}</p>
-            )}
-          </div>
-          <div className="full-width md:col-span-2">
-            <SubmitButton />
-          </div>
-        </form>
+        <div className="max-w-lg mx-auto p-1">
+          {submitSuccess && (
+            <div
+              className="mb-4 p-3 bg-green-100 dark:bg-green-700/30 border border-green-300 dark:border-green-600 text-green-700 dark:text-green-200 rounded-md text-sm"
+            >
+              Thank you! Your message has been sent successfully.
+            </div>
+          )}
+          {submitError && (
+            <div
+              className="mb-4 p-3 bg-red-100 dark:bg-red-700/30 border border-red-300 dark:border-red-600 text-red-700 dark:text-red-200 rounded-md text-sm"
+            >
+              {submitError}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} ref={formRef} className="space-y-4">
+            <div>
+              <Label htmlFor="name" className="block text-sm font-medium text-foreground mb-1">
+                Full Name
+              </Label>
+              <Input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                placeholder="John Doe"
+                className={inputStyles}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">
+                Email Address
+              </Label>
+              <Input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                placeholder="john.doe@example.com"
+                className={inputStyles}
+              />
+            </div>
+             <div>
+              <Label htmlFor="subject" className="block text-sm font-medium text-foreground mb-1">
+                Subject
+              </Label>
+              <Input
+                type="text"
+                id="subject"
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+                required
+                placeholder="Project Inquiry"
+                className={inputStyles}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="message" className="block text-sm font-medium text-foreground mb-1">
+                Message
+              </Label>
+              <Textarea
+                id="message"
+                name="message"
+                rows={5}
+                value={formData.message}
+                onChange={handleChange}
+                required
+                placeholder="Your message here..."
+                className={cn(inputStyles, "min-h-[120px]")}
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Send className="mr-2 h-4 w-4" />
+                  Send Message
+                </>
+              )}
+            </Button>
+          </form>
+        </div>
       </ScrollArea>
     </div>
   );
