@@ -24,7 +24,10 @@ const ProjectCard: React.FC<{ project: Project; onOpenDetail: (project: Project)
         />
       </div>
       <CardHeader>
-        <CardTitle className="text-lg">{project.title}</CardTitle>
+        <CardTitle className="text-lg flex items-center gap-2">
+          {project.icon && <span className="text-primary">{React.cloneElement(project.icon as React.ReactElement, { size: 20 })}</span>}
+          {project.title}
+        </CardTitle>
         <CardDescription className="text-xs h-10 overflow-hidden text-ellipsis">{project.description}</CardDescription>
       </CardHeader>
       <CardContent className="flex-grow">
@@ -66,8 +69,11 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
           <DialogContent className="max-w-2xl acrylic-blur acrylic-light dark:acrylic-dark !bg-card/90 dark:!bg-card/90 p-0">
             <ScrollArea className="max-h-[80vh]">
               <DialogHeader className="p-6 pb-0">
-                <DialogTitle className="text-2xl">{selectedProject.title}</DialogTitle>
-                <DialogDescription>{selectedProject.category}</DialogDescription>
+                <DialogTitle className="text-2xl flex items-center gap-3">
+                  {selectedProject.icon && <span className="text-primary">{React.cloneElement(selectedProject.icon as React.ReactElement, { size: 28 })}</span>}
+                  {selectedProject.title}
+                </DialogTitle>
+                <DialogDescription className="pl-[calc(28px+0.75rem)]">{selectedProject.category}</DialogDescription>
               </DialogHeader>
               <div className="p-6">
                 <div className="relative w-full h-64 rounded-md overflow-hidden mb-4">

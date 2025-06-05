@@ -34,6 +34,7 @@ export interface AppDefinition {
 export interface Project {
   id: string;
   title: string;
+  icon?: React.ReactNode;
   description: string;
   longDescription?: string;
   technologies: string[];

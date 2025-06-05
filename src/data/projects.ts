@@ -1,9 +1,21 @@
 import type { Project } from '@/types';
+import { Music2, Users, Download, Briefcase, Camera, Handshake } from 'lucide-react';
+import React from 'react';
+
+const InstagramIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+  </svg>
+);
+
 
 export const sampleProjects: Project[] = [
   {
     id: 'dtunes-music-platform',
     title: 'dTunes Music Platform',
+    icon: <Music2 size={18} />,
     description: 'A full-stack music platform empowering independent artists.',
     longDescription: `dTunes revolutionizes music distribution by giving artists direct control over their work. This comprehensive platform features artist verification, music uploads with metadata, custom playlist creation, and integrated Stripe payments. The admin dashboard provides detailed analytics on listens and earnings.
 
@@ -20,13 +32,14 @@ Key Features:
       { url: 'https://placehold.co/1280x720.png', hint: 'music player', caption: 'Main Player Interface' },
       { url: 'https://placehold.co/1280x720.png', hint: 'artist dashboard', caption: 'Artist Analytics Dashboard' },
     ],
-    liveDemoUrl: '#', // Replace with actual link
-    githubUrl: '#', // Replace with actual link
+    liveDemoUrl: '#',
+    githubUrl: '#',
     category: 'Web Platform',
   },
   {
     id: 'dzaleka-online-community',
     title: 'Dzaleka Online',
+    icon: <Users size={18} />,
     description: 'Social platform connecting refugee communities.',
     longDescription: `Dzaleka Online creates a digital home for displaced communities, offering secure communication tools in multiple languages. The platform features real-time chat, media sharing, and community support systems while maintaining strict privacy controls.
 
@@ -43,13 +56,14 @@ Key Features:
       { url: 'https://placehold.co/1280x720.png', hint: 'chat interface', caption: 'Secure Messaging' },
       { url: 'https://placehold.co/1280x720.png', hint: 'community feed', caption: 'Community Feed & Events' },
     ],
-    liveDemoUrl: '#', // Replace with actual link
-    githubUrl: '#', // Replace with actual link
+    liveDemoUrl: '#',
+    githubUrl: '#',
     category: 'Social Platform',
   },
   {
     id: 'telegram-media-downloader-tool',
     title: 'Telegram Media Downloader',
+    icon: <Download size={18} />,
     description: 'Browser-based Telegram content downloader.',
     longDescription: `This tool enables secure downloading of media from Telegram channels without storing credentials. It features batch downloading, media previews, and organizes content by date/channel with client-side processing.
 
@@ -66,13 +80,14 @@ Key Features:
       { url: 'https://placehold.co/1280x720.png', hint: 'download settings', caption: 'Download Configuration' },
       { url: 'https://placehold.co/1280x720.png', hint: 'file browser', caption: 'Organized Downloads' },
     ],
-    liveDemoUrl: '#', // Replace with actual link
-    githubUrl: '#', // Replace with actual link
+    liveDemoUrl: '#',
+    githubUrl: '#',
     category: 'Utility Tool',
   },
   {
     id: 'loophire-job-platform',
     title: 'LoopHire',
+    icon: <Briefcase size={18} />,
     description: 'Social job referral platform.',
     longDescription: `LoopHire transforms job searching through professional networks. The platform verifies work histories and enables direct referral requests with real-time status tracking and interview preparation resources.
 
@@ -89,13 +104,14 @@ Key Features:
       { url: 'https://placehold.co/1280x720.png', hint: 'user profile', caption: 'User Profile & Verification' },
       { url: 'https://placehold.co/1280x720.png', hint: 'referral tracking', caption: 'Referral Status Dashboard' },
     ],
-    liveDemoUrl: '#', // Replace with actual link
-    githubUrl: '#', // Replace with actual link
+    liveDemoUrl: '#',
+    githubUrl: '#',
     category: 'Web Platform',
   },
   {
     id: 'reborn-pixels-portfolio',
     title: 'Reborn Pixels',
+    icon: <Camera size={18} />,
     description: 'Photography portfolio with CMS.',
     longDescription: `A visually stunning portfolio showcasing photographic work with Cloudinary integration for high-performance image delivery. Includes client galleries, EXIF data display, and password-protected collections.
 
@@ -112,13 +128,14 @@ Key Features:
       { url: 'https://placehold.co/1280x720.png', hint: 'photo showcase', caption: 'Main Gallery View' },
       { url: 'https://placehold.co/1280x720.png', hint: 'image details', caption: 'EXIF Data Display' },
     ],
-    liveDemoUrl: '#', // Replace with actual link
-    githubUrl: '#', // Replace with actual link
+    liveDemoUrl: '#',
+    githubUrl: '#',
     category: 'Photography Portfolio',
   },
   {
     id: 'windows-of-hope-npo-platform',
     title: 'Windows of Hope',
+    icon: <Handshake size={18} />,
     description: 'Nonprofit management platform.',
     longDescription: `Comprehensive solution for NGOs featuring donor management, volunteer coordination, and impact reporting. Includes customizable donation flows and real-time campaign analytics.
 
@@ -135,13 +152,14 @@ Key Features:
       { url: 'https://placehold.co/1280x720.png', hint: 'donor management', caption: 'Donor Management Interface' },
       { url: 'https://placehold.co/1280x720.png', hint: 'campaign stats', caption: 'Campaign Impact Analytics' },
     ],
-    liveDemoUrl: '#', // Replace with actual link
-    githubUrl: '#', // Replace with actual link
+    liveDemoUrl: '#',
+    githubUrl: '#',
     category: 'Web Platform',
   },
   {
     id: 'instagram-nonfollowers-checker-tool',
     title: 'Instagram Non-Followers Checker',
+    icon: <InstagramIcon />,
     description: 'Browser-based follower analysis tool.',
     longDescription: `Privacy-focused tool that analyzes follower relationships locally in your browser. Processes exported Instagram data to identify non-reciprocal relationships and ghost followers without API access.
 
@@ -158,8 +176,8 @@ Key Features:
       { url: 'https://placehold.co/1280x720.png', hint: 'data import', caption: 'Data Import Screen' },
       { url: 'https://placehold.co/1280x720.png', hint: 'analysis results', caption: 'Follower Analysis Results' },
     ],
-    liveDemoUrl: '#', // Replace with actual link
-    githubUrl: '#', // Replace with actual link
+    liveDemoUrl: '#',
+    githubUrl: '#',
     category: 'Utility Tool',
   },
 ];
