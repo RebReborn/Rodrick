@@ -1,37 +1,105 @@
-%PDF-1.4
-%âãÏÓ
-1 0 obj
-<< /Type /Catalog /Pages 2 0 R >>
-endobj
-2 0 obj
-<< /Type /Pages /Kids [3 0 R] /Count 1 >>
-endobj
-3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
-endobj
-4 0 obj
-<< /Length 54 >>
-stream
-BT
-/F1 24 Tf
-100 700 Td
-(Placeholder Resume) Tj
-ET
-endstream
-endobj
-5 0 obj
-<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
-endobj
-xref
-0 6
-0000000000 65535 f 
-0000000015 00000 n 
-0000000060 00000 n 
-0000000111 00000 n 
-0000000219 00000 n 
-0000000273 00000 n 
-trailer
-<< /Size 6 /Root 1 0 R >>
-startxref
-332
-%%EOF
+<!-- Resume Window -->
+<div class="window" id="resumeWindow">
+    <div class="window-header">
+        <div class="window-title">Rodrick Ramadhani - Resume</div>
+        <div class="window-controls">
+            <button class="window-btn minimize"><i class="fas fa-minus"></i></button>
+            <button class="window-btn maximize"><i class="far fa-square"></i></button>
+            <button class="window-btn close" onclick="closeWindow('resumeWindow')"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+    <div class="window-content">
+        <div class="resume-content">
+            <div class="resume-header">
+                <h1>Rodrick Ramadhani</h1>
+                <p>Software Developer & Creative Technologist</p>
+                <div class="resume-contact">
+                    <span><i class="fas fa-envelope"></i> rodrickreborn@gmail.com</span>
+                    <span><i class="fas fa-phone"></i> (123) 456-7890</span>
+                    <span><i class="fas fa-map-marker-alt"></i> Edmonton, Canada</span>
+                </div>
+            </div>
+
+            <div class="resume-section">
+                <h2><i class="fas fa-briefcase"></i> Professional Experience</h2>
+                <div class="resume-item">
+                    <h3>Freelance Full-Stack Developer</h3>
+                    <div class="resume-date">2020 - Present</div>
+                    <ul>
+                        <li>Developed dTunes - A music platform for local artists with Stripe integration</li>
+                        <li>Created Dzaleka Online - A community social platform for refugees</li>
+                        <li>Built Windows of Hope - A nonprofit platform with donation processing</li>
+                        <li>Designed and implemented multiple web applications using React, Next.js, and Firebase</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="resume-section">
+                <h2><i class="fas fa-code"></i> Technical Skills</h2>
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h3>Frontend</h3>
+                        <ul>
+                            <li>React</li>
+                            <li>Next.js</li>
+                            <li>TypeScript</li>
+                            <li>Tailwind CSS</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category">
+                        <h3>Backend</h3>
+                        <ul>
+                            <li>Node.js</li>
+                            <li>Firebase</li>
+                            <li>MongoDB</li>
+                            <li>API Design</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category">
+                        <h3>Tools</h3>
+                        <ul>
+                            <li>Git</li>
+                            <li>Docker</li>
+                            <li>Figma</li>
+                            <li>Cloudinary</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resume-section">
+                <h2><i class="fas fa-graduation-cap"></i> Education</h2>
+                <div class="resume-item">
+                    <h3>Self-Taught Developer</h3>
+                    <div class="resume-date">2018 - Present</div>
+                    <p>Continuous learning through online courses, documentation, and practical project building</p>
+                </div>
+            </div>
+
+            <div class="resume-section">
+                <h2><i class="fas fa-project-diagram"></i> Notable Projects</h2>
+                <div class="project-item">
+                    <h3>dTunes</h3>
+                    <p>Music platform for local artists with payment integration</p>
+                </div>
+                <div class="project-item">
+                    <h3>Dzaleka Online</h3>
+                    <p>Community social platform connecting refugees</p>
+                </div>
+                <div class="project-item">
+                    <h3>Telegram Media Downloader</h3>
+                    <p>Browser-based tool for downloading Telegram media</p>
+                </div>
+            </div>
+
+            <div class="resume-actions">
+                <a href="/Rodrick-Reborn-Resume.pdf" download class="download-btn">
+                    <i class="fas fa-download"></i> Download PDF
+                </a>
+                <a href="/contact" class="contact-btn">
+                    <i class="fas fa-envelope"></i> Contact Me
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
