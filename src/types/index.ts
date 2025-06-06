@@ -40,10 +40,30 @@ export interface Project {
   technologies: string[];
   imageUrl: string;
   imageHint?: string;
-  screenshots?: { url: string, hint?: string, caption?: string }[];
+  screenshots?: {
+    url: string;
+    hint?: string;
+    caption?: string;
+    thumbnailUrl?: string; // Added based on new data
+  }[];
   liveDemoUrl?: string;
   githubUrl?: string;
   category?: string;
+  status?: 'active' | 'archived' | 'development';
+  featured?: boolean;
+  tags?: string[];
+  createdAt?: string; // Assuming string format like 'YYYY-MM-DD'
+  updatedAt?: string; // Assuming string format like 'YYYY-MM-DD'
+  stats?: Record<string, string | number>;
+  uiFeatures?: string[];
+  accessibility?: {
+    keyboardNav?: boolean;
+    screenReader?: boolean;
+    contrastOptions?: boolean;
+    reducedMotion?: boolean;
+    highContrast?: boolean;
+    textZoom?: boolean;
+  };
 }
 
 export interface Skill {
@@ -57,4 +77,14 @@ export interface PlaceholderProject {
   description: string;
   technologyStack: string[];
   imagePrompt: string;
+}
+
+// For Future Adventure Categories in projects.ts
+export interface FutureAdventureCategory {
+  id: string;
+  name: string;
+  fullName: string;
+  icon: React.ReactNode;
+  description?: string;
+  colorClass?: string;
 }

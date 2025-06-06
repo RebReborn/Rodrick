@@ -3,16 +3,17 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { ExternalLink, Github, Info, Maximize, Loader2, Lightbulb } from 'lucide-react';
+import { ExternalLink, Github, Info, Maximize, Loader2, Lightbulb, CheckCircle, Accessibility, Tag } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import type { Project, PlaceholderProject } from '@/types';
-import { sampleProjects, futureAdventuresData, type FutureAdventureCategory } from '@/data/projects';
+import type { Project, PlaceholderProject, FutureAdventureCategory } from '@/types';
+import { sampleProjects, futureAdventuresData } from '@/data/projects';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge'; // Import Badge component
 
 const ProjectCard: React.FC<{ project: Project; onOpenDetail: (project: Project) => void }> = ({ project, onOpenDetail }) => {
   const handleCardActivate = () => {
@@ -69,12 +70,19 @@ const FutureAdventureItem: React.FC<{ adventure: FutureAdventureCategory, onClic
   return (
     <Button
       variant="ghost"
-      className="flex flex-col items-center justify-center h-28 p-2 text-center opacity-70 hover:opacity-100 hover:bg-primary/20 dark:hover:bg-primary/10 w-full rounded-md transition-all duration-300 app-item future group"
+      className={cn(
+        "flex flex-col items-center justify-center h-28 p-2 text-center hover:opacity-100 w-full rounded-md transition-all duration-300 app-item future group",
+        adventure.colorClass ? adventure.colorClass.replace('bg-', 'hover:bg-').replace('text-', 'hover:text-') : 'hover:bg-primary/20 dark:hover:bg-primary/10',
+        'opacity-80' // Slightly dimmed by default
+      )}
       onClick={() => onClick(adventure)}
       title={adventure.fullName}
     >
-      <span className="mb-2 text-primary">{React.cloneElement(adventure.icon as React.ReactElement, { size: 32 })}</span>
+      <span className={cn("mb-2", adventure.colorClass ? adventure.colorClass.split(' ')[1] : 'text-primary')}>
+          {React.cloneElement(adventure.icon as React.ReactElement, { size: 32 })}
+      </span>
       <span className="text-xs leading-tight text-foreground">{adventure.name}</span>
+       {adventure.description && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{adventure.description}</p>}
     </Button>
   );
 };
@@ -223,11 +231,13 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
                 {selectedProject.icon && React.cloneElement(selectedProject.icon as React.ReactElement, { size: 28, className: "text-primary"})}
                 {selectedProject.title}
               </DialogTitle>
-              <DialogDescription className="pl-[calc(28px+0.75rem)] text-muted-foreground">{selectedProject.category}</DialogDescription>
+              <DialogDescription className="pl-[calc(28px+0.75rem)] text-muted-foreground">
+                {selectedProject.category} {selectedProject.status && <Badge variant={selectedProject.status === 'active' ? "default" : "secondary"} className="ml-2">{selectedProject.status}</Badge>}
+              </DialogDescription>
             </DialogHeader>
             
-            <ScrollArea className="flex-grow min-h-0"> {/* ScrollArea is now the direct flex-grow child */}
-              <div className="p-6"> {/* Padding is inside the ScrollArea's direct child */}
+            <ScrollArea className="flex-grow min-h-0">
+              <div className="p-6">
                 <div className="relative w-full h-56 md:h-72 rounded-md overflow-hidden mb-6 shadow-md">
                   <Image
                     src={selectedProject.imageUrl}
@@ -239,6 +249,18 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
                     onLoad={(e) => e.currentTarget.classList.add('loaded')}
                   />
                 </div>
+                
+                {selectedProject.tags && selectedProject.tags.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="font-semibold mb-2 text-foreground flex items-center"><Tag size={16} className="mr-2 text-primary/80"/>Tags:</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedProject.tags.map(tag => (
+                        <Badge key={tag} variant="secondary">{tag}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="project-details text-foreground/90 text-sm leading-relaxed mb-6" dangerouslySetInnerHTML={{ __html: selectedProject.longDescription?.replace(/\n/g, '<br />') || selectedProject.description }} />
 
                 <h3 className="font-semibold mb-2 text-foreground">Technologies Used:</h3>
@@ -248,13 +270,65 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
                   ))}
                 </div>
 
+                {selectedProject.uiFeatures && selectedProject.uiFeatures.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="font-semibold mb-2 text-foreground flex items-center"><CheckCircle size={16} className="mr-2 text-primary/80"/>UI Features:</h3>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-foreground/80">
+                      {selectedProject.uiFeatures.map(feature => (
+                        <li key={feature}>{feature}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {selectedProject.accessibility && Object.keys(selectedProject.accessibility).length > 0 && (
+                   <div className="mb-6">
+                    <h3 className="font-semibold mb-2 text-foreground flex items-center"><Accessibility size={16} className="mr-2 text-primary/80"/>Accessibility Features:</h3>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-foreground/80">
+                      {Object.entries(selectedProject.accessibility)
+                        .filter(([, value]) => value) // Only show true values
+                        .map(([key, value]) => (
+                          <li key={key}>{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                
+                {selectedProject.stats && (
+                  <div className="mb-6">
+                    <h3 className="font-semibold mb-2 text-foreground">Project Stats:</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
+                      {Object.entries(selectedProject.stats).map(([key, value]) => (
+                        <div key={key} className="bg-muted/50 p-2 rounded-md">
+                          <p className="font-medium capitalize text-primary/90">{key.replace(/([A-Z])/g, ' $1')}:</p>
+                          <p className="text-foreground/80">{value}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+
                 {selectedProject.screenshots && selectedProject.screenshots.length > 0 && (
                   <>
                     <h3 className="font-semibold mb-3 text-foreground">Screenshots:</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 project-screenshots">
                       {selectedProject.screenshots.map((ss, idx) => (
-                        <div key={idx} className="rounded-md overflow-hidden border border-border/20 shadow-md screenshot">
-                           <Image src={ss.url} alt={ss.caption || `Screenshot ${idx+1}`} width={600} height={400} objectFit="cover" data-ai-hint={ss.hint || "application screenshot"} loading="lazy" className="opacity-0 transition-opacity duration-300 loaded:opacity-100" onLoad={(e) => e.currentTarget.classList.add('loaded')} />
+                        <div key={idx} className="rounded-md overflow-hidden border border-border/20 shadow-md screenshot group relative">
+                           <Image 
+                            src={ss.thumbnailUrl || ss.url} // Prefer thumbnail for grid
+                            alt={ss.caption || `Screenshot ${idx+1}`} 
+                            width={300} // Smaller width for grid
+                            height={200} // Smaller height for grid
+                            objectFit="cover" 
+                            data-ai-hint={ss.hint || "application screenshot"} 
+                            loading="lazy" 
+                            className="opacity-0 transition-opacity duration-300 loaded:opacity-100" 
+                            onLoad={(e) => e.currentTarget.classList.add('loaded')} 
+                           />
+                           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                             <Maximize size={24} className="text-white" />
+                           </div>
                            {ss.caption && <p className="text-xs text-center p-1.5 bg-muted/50 text-muted-foreground">{ss.caption}</p>}
                         </div>
                       ))}
@@ -290,3 +364,4 @@ const ProjectsApp: React.FC<{ windowId: string; appKey: string }> = () => {
 };
 
 export default ProjectsApp;
+
