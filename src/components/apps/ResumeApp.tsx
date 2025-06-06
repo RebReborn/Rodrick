@@ -31,7 +31,7 @@ const ResumeApp: React.FC<{ windowId: string; appKey: string }> = () => {
           </Button>
         </div>
       </header>
-      <ScrollArea className="flex-grow resume-content p-1">
+      <ScrollArea className="flex-grow"> {/* Removed p-1 and resume-content classes */}
         <div className="max-w-4xl mx-auto bg-card p-4 sm:p-6 md:p-8 rounded-lg shadow-md">
           {/* Resume Header */}
           <div className="text-center border-b border-border pb-6 mb-6">
@@ -140,5 +140,3 @@ const ResumeApp: React.FC<{ windowId: string; appKey: string }> = () => {
 };
 
 export default ResumeApp;
-
-  
