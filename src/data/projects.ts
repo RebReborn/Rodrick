@@ -33,7 +33,7 @@ Key Features:
 - Stripe integration for payments
 - Responsive design for all devices`,
     technologies: ['Next.js', 'Firebase', 'Stripe API', 'Tailwind CSS', 'Framer Motion'],
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://static.desygner.com/wp-content/uploads/sites/13/2022/05/04141642/Free-Stock-Photos-01.jpg',
     imageHint: 'music platform',
     screenshots: [
       { url: 'https://placehold.co/1280x720.png', hint: 'music player', caption: 'Main Player Interface' },
