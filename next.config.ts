@@ -31,7 +31,13 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'static.desygner.com', // Added this line
+        hostname: 'static.desygner.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.pixabay.com', // Added this line
         port: '',
         pathname: '/**',
       },

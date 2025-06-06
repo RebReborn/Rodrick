@@ -1,8 +1,6 @@
 
 import type React from 'react';
-import type { Project, FutureAdventureCategory } from '@/types';
-
-// Import all icons
+import type { Project } from '@/types';
 import {
   DtunesIcon,
   DzalekaIcon,
@@ -20,14 +18,6 @@ import {
   SecurityToolsIcon
 } from './project-icons';
 
-// Color palette for project categories
-const categoryColors: Record<string, string> = {
-  'Web Platform': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-  'Social Platform': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-  'Utility Tool': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-  'Photography Portfolio': 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200'
-};
-
 export const sampleProjects: Project[] = [
   {
     id: 'dtunes-music-platform',
@@ -43,47 +33,15 @@ Key Features:
 - Stripe integration for payments
 - Responsive design for all devices`,
     technologies: ['Next.js', 'Firebase', 'Stripe API', 'Tailwind CSS', 'Framer Motion'],
-    imageUrl: 'https://placehold.co/600x400.png', // Updated from Google URL
-    imageHint: 'music platform interface showing player and analytics',
+    imageUrl: 'https://static.desygner.com/wp-content/uploads/sites/13/2022/05/04141642/Free-Stock-Photos-01.jpg',
+    imageHint: 'music platform',
     screenshots: [
-      { 
-        url: 'https://placehold.co/1280x720.png', // Updated from Google URL
-        hint: 'music player interface', 
-        caption: 'Main Player Interface with Waveform Visualization',
-        thumbnailUrl: 'https://placehold.co/300x200/1e3a8a/ffffff?text=Player+Thumb'
-      },
-      { 
-        url: 'https://placehold.co/1280x720/1e3a8a/ffffff?text=Artist+Dashboard', 
-        hint: 'artist analytics dashboard', 
-        caption: 'Artist Analytics Dashboard with Earnings Breakdown',
-        thumbnailUrl: 'https://placehold.co/300x200/1e3a8a/ffffff?text=Dashboard+Thumb'
-      },
+      { url: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixabay.com%2Fphotos%2Fbird-blue-clouds-weather-pen-8788491%2F&psig=AOvVaw2_Z01Grue4h4odnOsGcTH8&ust=1749256025759000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCLjX19PE240DFQAAAAAdAAAAABAL', hint: 'music player', caption: 'Main Player Interface' },
+      { url: 'https://placehold.co/1280x720.png', hint: 'artist dashboard', caption: 'Artist Analytics Dashboard' },
     ],
     liveDemoUrl: '#',
     githubUrl: '#',
     category: 'Web Platform',
-    status: 'active',
-    featured: true,
-    tags: ['music', 'streaming', 'artists', 'analytics'],
-    createdAt: '2023-01-15',
-    updatedAt: '2023-06-20',
-    stats: {
-      users: '10K+',
-      rating: '4.8/5',
-      uptime: '99.9%'
-    },
-    // UI/UX enhancements
-    uiFeatures: [
-      'Dark/light mode toggle',
-      'Interactive audio waveform',
-      'Animated transitions',
-      'Responsive grid layout'
-    ],
-    accessibility: {
-      keyboardNav: true,
-      screenReader: true,
-      contrastOptions: true
-    }
   },
   {
     id: 'dzaleka-online-community',
@@ -99,47 +57,15 @@ Key Features:
 - Community moderation tools
 - Offline-first functionality`,
     technologies: ['Next.js', 'Firebase', 'WebSockets', 'i18n', 'Workbox'],
-    imageUrl: 'https://placehold.co/600x400.png', // Updated from Google URL
-    imageHint: 'community interface showing chat and events',
+    imageUrl: 'https://cdn.pixabay.com/photo/2024/05/26/10/15/bird-8788491_1280.jpg',
+    imageHint: 'community interface',
     screenshots: [
-      { 
-        url: 'https://placehold.co/1280x720/5b21b6/ffffff?text=Secure+Chat', 
-        hint: 'encrypted chat interface', 
-        caption: 'Secure Messaging with Translation Options',
-        thumbnailUrl: 'https://placehold.co/300x200/5b21b6/ffffff?text=Chat+Thumb'
-      },
-      { 
-        url: 'https://placehold.co/1280x720/5b21b6/ffffff?text=Community+Feed', 
-        hint: 'community event feed', 
-        caption: 'Community Feed with Upcoming Events',
-        thumbnailUrl: 'https://placehold.co/300x200/5b21b6/ffffff?text=Feed+Thumb'
-      },
+      { url: 'https://placehold.co/1280x720.png', hint: 'chat interface', caption: 'Secure Messaging' },
+      { url: 'https://placehold.co/1280x720.png', hint: 'community feed', caption: 'Community Feed & Events' },
     ],
     liveDemoUrl: '#',
     githubUrl: '#',
     category: 'Social Platform',
-    status: 'active',
-    featured: true,
-    tags: ['community', 'refugees', 'messaging', 'multilingual'],
-    createdAt: '2022-09-10',
-    updatedAt: '2023-05-15',
-    stats: {
-      users: '5K+',
-      languages: 4,
-      messages: '1M+ monthly'
-    },
-    // UI/UX enhancements
-    uiFeatures: [
-      'Language switcher',
-      'Offline indicator',
-      'Typing indicators',
-      'Accessibility menu'
-    ],
-    accessibility: {
-      keyboardNav: true,
-      screenReader: true,
-      textZoom: true
-    }
   },
   {
     id: 'telegram-media-downloader-tool',
@@ -155,49 +81,17 @@ Key Features:
 - Client-side only processing
 - Channel-based organization`,
     technologies: ['React', 'Telegram API', 'GramJS', 'IndexedDB', 'Tailwind CSS'],
-    imageUrl: 'https://placehold.co/600x400/065f46/ffffff?text=Telegram+Downloader',
-    imageHint: 'downloader application interface',
+    imageUrl: 'https://www.stockvault.net/data/2020/01/18/272608/thumb16.jpg',
+    imageHint: 'downloader application',
     screenshots: [
-      { 
-        url: 'https://placehold.co/1280x720/065f46/ffffff?text=Download+Settings', 
-        hint: 'download configuration screen', 
-        caption: 'Download Configuration with Quality Options',
-        thumbnailUrl: 'https://placehold.co/300x200/065f46/ffffff?text=Settings+Thumb'
-      },
-      { 
-        url: 'https://placehold.co/1280x720/065f46/ffffff?text=File+Browser', 
-        hint: 'organized downloads browser', 
-        caption: 'Organized Downloads by Channel and Date',
-        thumbnailUrl: 'https://placehold.co/300x200/065f46/ffffff?text=Browser+Thumb'
-      },
+      { url: 'https://placehold.co/1280x720.png', hint: 'download settings', caption: 'Download Configuration' },
+      { url: 'https://placehold.co/1280x720.png', hint: 'file browser', caption: 'Organized Downloads' },
     ],
     liveDemoUrl: '#',
     githubUrl: '#',
     category: 'Utility Tool',
-    status: 'active',
-    featured: false,
-    tags: ['telegram', 'downloader', 'media', 'privacy'],
-    createdAt: '2023-03-05',
-    updatedAt: '2023-07-18',
-    stats: {
-      downloads: '50K+',
-      avgRating: '4.6/5',
-      supportedFormats: 8
-    },
-    // UI/UX enhancements
-    uiFeatures: [
-      'Drag-and-drop organization',
-      'Bulk selection',
-      'Download progress indicators',
-      'Dark mode'
-    ],
-    accessibility: {
-      keyboardNav: true,
-      reducedMotion: true,
-      highContrast: true
-    }
   },
-   {
+  {
     id: 'loophire-job-platform',
     title: 'LoopHire',
     icon: LoopHireIcon,
@@ -211,7 +105,7 @@ Key Features:
 - Interview preparation kits
 - Real-time notifications`,
     technologies: ['React', 'Firebase', 'Algolia Search', 'Figma', 'Firestore'],
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://www.stockvault.net/data/2020/01/18/272608/thumb16.jpg',
     imageHint: 'job platform',
     screenshots: [
       { url: 'https://placehold.co/1280x720.png', hint: 'user profile', caption: 'User Profile & Verification' },
@@ -235,7 +129,7 @@ Key Features:
 - Cloudinary media management
 - Mobile-optimized viewer`,
     technologies: ['Next.js', 'Cloudinary', 'EXIF.js', 'Framer Motion', 'Tailwind CSS'],
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://media.istockphoto.com/id/1322104312/photo/freedom-chains-that-transform-into-birds-charge-concept.jpg?s=612x612&w=0&k=20&c=e2XUx498GotTLJn_62tPmsqj6vU48ZEkf0auXi6Ywh0=',
     imageHint: 'photography gallery',
     screenshots: [
       { url: 'https://placehold.co/1280x720.png', hint: 'photo showcase', caption: 'Main Gallery View' },
@@ -259,7 +153,7 @@ Key Features:
 - Recurring donations
 - Impact storytelling tools`,
     technologies: ['Next.js', 'MongoDB', 'Stripe', 'Chart.js', 'Nodemailer'],
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://static1.makeuseofimages.com/wordpress/wp-content/uploads/2016/10/camera-photo-lens-stock-images.jpg',
     imageHint: 'nonprofit dashboard',
     screenshots: [
       { url: 'https://placehold.co/1280x720.png', hint: 'donor management', caption: 'Donor Management Interface' },
@@ -283,7 +177,7 @@ Key Features:
 - Privacy guarantee (no server processing)
 - Custom filtering options`,
     technologies: ['Vanilla JS', 'FileReader API', 'Chart.js', 'Bootstrap', 'LocalStorage'],
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://static1.makeuseofimages.com/wordpress/wp-content/uploads/2016/10/camera-photo-lens-stock-images.jpg',
     imageHint: 'follower analysis',
     screenshots: [
       { url: 'https://placehold.co/1280x720.png', hint: 'data import', caption: 'Data Import Screen' },
@@ -295,66 +189,20 @@ Key Features:
   },
 ];
 
-export const futureAdventuresData: FutureAdventureCategory[] = [
-  { 
-    id: 'mobile-app-dev', 
-    name: 'Mobile App', 
-    fullName: 'Mobile App Development', 
-    icon: MobileAppDevIcon,
-    description: 'Cross-platform mobile experiences with React Native and Flutter',
-    colorClass: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200'
-  },
-  { 
-    id: 'game-dev', 
-    name: 'Game Dev', 
-    fullName: 'Game Development', 
-    icon: GameDevIcon,
-    description: 'Interactive gaming experiences with Unity and WebGL',
-    colorClass: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-  },
-  { 
-    id: 'data-viz', 
-    name: 'Data Viz', 
-    fullName: 'Data Visualization', 
-    icon: DataVizIcon,
-    description: 'Beautiful, interactive data stories with D3.js and Three.js',
-    colorClass: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-  },
-  { 
-    id: 'ai-projects', 
-    name: 'AI Project', 
-    fullName: 'AI Projects', 
-    icon: AiProjectsIcon,
-    description: 'Machine learning applications and AI integrations',
-    colorClass: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-  },
-  { 
-    id: 'design-work', 
-    name: 'Design Work', 
-    fullName: 'Design Work', 
-    icon: DesignWorkIcon,
-    description: 'UI/UX design systems and interactive prototypes',
-    colorClass: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200'
-  },
-  { 
-    id: 'backend-api', 
-    name: 'Backend API', 
-    fullName: 'Backend API Development', 
-    icon: BackendApiIcon,
-    description: 'Scalable server architectures and microservices',
-    colorClass: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-  },
-  { 
-    id: 'security-tools', 
-    name: 'Security Tool', 
-    fullName: 'Security Tools', 
-    icon: SecurityToolsIcon,
-    description: 'Privacy-focused applications and security utilities',
-    colorClass: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-  },
-];
 
-// Utility function to get category color
-export const getCategoryColor = (category: string): string => {
-  return categoryColors[category] || 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200';
-};
+export interface FutureAdventureCategory {
+  id: string;
+  name: string;
+  fullName: string; // For onclick handler or detailed view later
+  icon: React.ReactNode;
+}
+
+export const futureAdventuresData: FutureAdventureCategory[] = [
+  { id: 'mobile-app-dev', name: 'Mobile App', fullName: 'Mobile App Development', icon: MobileAppDevIcon },
+  { id: 'game-dev', name: 'Game Dev', fullName: 'Game Development', icon: GameDevIcon },
+  { id: 'data-viz', name: 'Data Viz', fullName: 'Data Visualization', icon: DataVizIcon },
+  { id: 'ai-projects', name: 'AI Project', fullName: 'AI Projects', icon: AiProjectsIcon },
+  { id: 'design-work', name: 'Design Work', fullName: 'Design Work', icon: DesignWorkIcon },
+  { id: 'backend-api', name: 'Backend API', fullName: 'Backend API Development', icon: BackendApiIcon },
+  { id: 'security-tools', name: 'Security Tool', fullName: 'Security Tools', icon: SecurityToolsIcon },
+];
