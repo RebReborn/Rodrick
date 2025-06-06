@@ -37,7 +37,13 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'cdn.pixabay.com', // Added this line
+        hostname: 'cdn.pixabay.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.stockvault.net',
         port: '',
         pathname: '/**',
       },
