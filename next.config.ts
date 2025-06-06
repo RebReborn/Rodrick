@@ -53,6 +53,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'static1.makeuseofimages.com',
+        port: '',
+        pathname: '/**',
+      },
       // Add other image hostnames here if needed for actual projects
       // {
       //   protocol: 'https',
