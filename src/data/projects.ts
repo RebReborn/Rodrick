@@ -18,7 +18,16 @@ import {
   DesignWorkIcon,
   BackendApiIcon,
   SecurityToolsIcon,
-  FluentFolioIcon
+  FluentFolioIcon,
+  RebornProjectIcon,
+  SynapseSnapIcon,
+  DoPeVestIcon,
+  MaliPayIcon,
+  FitJourneyIcon,
+  StreamPulseIcon,
+  MalawiMarketConnectIcon,
+  MelodyShareIcon,
+  CollabInvestIcon
 } from './project-icons';
 
 // Color palette for project categories
@@ -28,6 +37,15 @@ const categoryColors: Record<string, string> = {
   'Utility Tool': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
   'Photography Portfolio': 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200',
   'Portfolio Application': 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200',
+  'Innovation Platform': 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+  'AI Application': 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200',
+  'Investment Platform': 'bg-lime-100 text-lime-800 dark:bg-lime-900 dark:text-lime-200',
+  'Payment Solution': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200',
+  'Fitness Application': 'bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200',
+  'Analytics Tool': 'bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-200',
+  'Marketplace': 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
+  'Music Platform': 'bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900 dark:text-fuchsia-200',
+  'Investment Tool': 'bg-violet-100 text-violet-800 dark:bg-violet-900 dark:text-violet-200',
 };
 
 export const sampleProjects: Project[] = [
@@ -43,25 +61,25 @@ export const sampleProjects: Project[] = [
     screenshots: [
       {
         url: 'https://placehold.co/1280x720.png',
+        thumbnailUrl: 'https://placehold.co/300x200.png',
         hint: 'desktop view',
-        caption: 'Main Desktop Interface',
-        thumbnailUrl: 'https://placehold.co/300x200.png'
+        caption: 'Main Desktop Interface'
       },
       {
         url: 'https://placehold.co/1280x720.png',
+        thumbnailUrl: 'https://placehold.co/300x200.png',
         hint: 'app window',
-        caption: 'Application Window Example (Projects App)',
-        thumbnailUrl: 'https://placehold.co/300x200.png'
+        caption: 'Application Window Example (Projects App)'
       },
     ],
-    liveDemoUrl: '#', // This is the current site
-    githubUrl: '#', // Placeholder for actual repo
+    liveDemoUrl: '#', 
+    githubUrl: '#', 
     category: 'Portfolio Application',
     status: 'active',
     featured: true,
     tags: ['portfolio', 'interactive', 'os-theme', 'nextjs', 'react'],
-    createdAt: '2024-07-01', // Example date
-    updatedAt: '2024-07-28', // Example date
+    createdAt: '2024-07-01',
+    updatedAt: '2024-07-28',
     stats: {
       components: '50+',
       apps: '8+',
@@ -79,9 +97,171 @@ export const sampleProjects: Project[] = [
       keyboardNav: true,
       screenReader: true,
       contrastOptions: true,
-      reducedMotion: false, // Assuming animations are used
+      reducedMotion: false,
       textZoom: true
     }
+  },
+  {
+    id: 'reborn-project',
+    title: 'Reborn',
+    icon: RebornProjectIcon,
+    description: "A project focused on innovative solutions and new beginnings.",
+    longDescription: "This project explores cutting-edge technologies to deliver innovative solutions, aiming to redefine user experiences and introduce new paradigms. Placeholder for more details.",
+    technologies: ['Next.js', 'Genkit AI', 'Serverless', 'TypeScript'],
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'abstract concept',
+    screenshots: [{ url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'concept preview', caption: 'Conceptual design' }],
+    liveDemoUrl: '#',
+    githubUrl: '#',
+    category: 'Innovation Platform',
+    status: 'active',
+    tags: ['innovation', 'ai', 'future-tech'],
+    createdAt: '2024-05-01',
+    updatedAt: '2024-07-20',
+  },
+  {
+    id: 'synapse-snap',
+    title: 'Synapse Snap',
+    icon: SynapseSnapIcon,
+    description: "Capturing and connecting ideas with intelligent insights.",
+    longDescription: "Synapse Snap leverages AI to capture, organize, and connect ideas, transforming raw thoughts into actionable insights. Placeholder for more details.",
+    technologies: ['Python', 'Machine Learning', 'React', 'FastAPI'],
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'neural network',
+    screenshots: [{ url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'insights dashboard', caption: 'Dashboard view' }],
+    liveDemoUrl: '#',
+    githubUrl: '#',
+    category: 'AI Application',
+    status: 'active',
+    tags: ['ai', 'knowledge', 'insights'],
+    createdAt: '2024-04-10',
+    updatedAt: '2024-07-15',
+  },
+  {
+    id: 'dopevest',
+    title: 'DoPeVest',
+    icon: DoPeVestIcon,
+    description: "A platform for smart and accessible investments.",
+    longDescription: "DoPeVest aims to democratize investment opportunities by providing a user-friendly platform with intelligent tools for portfolio management. Placeholder for more details.",
+    technologies: ['Fintech', 'Blockchain', 'Node.js', 'React'],
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'finance chart',
+    screenshots: [{ url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'investment portfolio', caption: 'Portfolio overview' }],
+    liveDemoUrl: '#',
+    githubUrl: '#',
+    category: 'Investment Platform',
+    status: 'active',
+    tags: ['investment', 'finance', 'crypto'],
+    createdAt: '2024-03-15',
+    updatedAt: '2024-07-10',
+  },
+  {
+    id: 'malipay',
+    title: 'MaliPay',
+    icon: MaliPayIcon,
+    description: "Seamless and secure payment solutions for emerging markets.",
+    longDescription: "MaliPay focuses on providing accessible and secure digital payment infrastructure, catering to the unique needs of emerging economies. Placeholder for more details.",
+    technologies: ['Mobile Payments', 'Security', 'API Integration', 'Flutter'],
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'mobile payment',
+    screenshots: [{ url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'transaction screen', caption: 'Payment interface' }],
+    liveDemoUrl: '#',
+    githubUrl: '#',
+    category: 'Payment Solution',
+    status: 'active',
+    tags: ['payments', 'fintech', 'mobile'],
+    createdAt: '2024-02-20',
+    updatedAt: '2024-07-05',
+  },
+  {
+    id: 'fitjourney',
+    title: 'FitJourney',
+    icon: FitJourneyIcon,
+    description: "Tracking and motivating fitness goals for a healthier lifestyle.",
+    longDescription: "FitJourney is a comprehensive fitness companion app designed to help users track their progress, set goals, and stay motivated on their path to a healthier life. Placeholder for more details.",
+    technologies: ['React Native', 'Firebase', 'HealthKit', 'Google Fit'],
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'fitness tracker',
+    screenshots: [{ url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'activity dashboard', caption: 'User dashboard' }],
+    liveDemoUrl: '#',
+    githubUrl: '#',
+    category: 'Fitness Application',
+    status: 'active',
+    tags: ['fitness', 'health', 'mobile-app'],
+    createdAt: '2024-01-25',
+    updatedAt: '2024-06-30',
+  },
+  {
+    id: 'streampulse',
+    title: 'StreamPulse',
+    icon: StreamPulseIcon,
+    description: "Analytics platform for live streaming content creators (Archived).",
+    longDescription: "StreamPulse provided real-time analytics and insights for live streamers to understand their audience and optimize content (Archived). Placeholder for more details.",
+    technologies: ['Data Analytics', 'Streaming API', 'Vue.js', 'Chart.js'],
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'streaming dashboard',
+    screenshots: [{ url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'analytics graph', caption: 'Archived dashboard' }],
+    liveDemoUrl: '#',
+    githubUrl: '#',
+    category: 'Analytics Tool',
+    status: 'archived',
+    tags: ['streaming', 'analytics', 'archived'],
+    createdAt: '2023-01-10',
+    updatedAt: '2023-12-01',
+  },
+  {
+    id: 'malawi-market-connect',
+    title: 'Malawi Market Connect',
+    icon: MalawiMarketConnectIcon,
+    description: "Connecting local Malawian producers with broader markets (Archived).",
+    longDescription: "This platform aimed to bridge the gap between local producers in Malawi and wider markets, facilitating trade and economic growth (Archived). Placeholder for more details.",
+    technologies: ['E-commerce', 'Logistics', 'PHP', 'MySQL'],
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'market produce',
+    screenshots: [{ url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'product listing', caption: 'Archived marketplace' }],
+    liveDemoUrl: '#',
+    githubUrl: '#',
+    category: 'Marketplace',
+    status: 'archived',
+    tags: ['e-commerce', 'africa', 'archived'],
+    createdAt: '2022-11-01',
+    updatedAt: '2023-10-01',
+  },
+  {
+    id: 'melodyshare',
+    title: 'MelodyShare',
+    icon: MelodyShareIcon,
+    description: "A platform for sharing and discovering new music (Archived).",
+    longDescription: "MelodyShare was a social music platform allowing users to share their favorite tracks and discover new music through community recommendations (Archived). Placeholder for more details.",
+    technologies: ['Audio Streaming', 'Social Features', 'Ruby on Rails', 'PostgreSQL'],
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'music notes',
+    screenshots: [{ url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'song feed', caption: 'Archived music feed' }],
+    liveDemoUrl: '#',
+    githubUrl: '#',
+    category: 'Music Platform',
+    status: 'archived',
+    tags: ['music', 'social', 'archived'],
+    createdAt: '2022-09-15',
+    updatedAt: '2023-08-01',
+  },
+  {
+    id: 'collabinvest',
+    title: 'CollabInvest',
+    icon: CollabInvestIcon,
+    description: "Collaborative investment and portfolio management tool (Archived).",
+    longDescription: "CollabInvest enabled groups to pool funds and manage investments collectively, providing tools for decision-making and tracking (Archived). Placeholder for more details.",
+    technologies: ['Fintech', 'Collaboration Tools', 'Django', 'React'],
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'team collaboration',
+    screenshots: [{ url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'group portfolio', caption: 'Archived investment dashboard' }],
+    liveDemoUrl: '#',
+    githubUrl: '#',
+    category: 'Investment Tool',
+    status: 'archived',
+    tags: ['investment', 'collaboration', 'archived'],
+    createdAt: '2022-07-01',
+    updatedAt: '2023-06-01',
   },
   {
     id: 'dtunes-music-platform',
@@ -102,15 +282,15 @@ Key Features:
     screenshots: [
       {
         url: 'https://placehold.co/1280x720.png',
+        thumbnailUrl: 'https://placehold.co/300x200.png',
         hint: 'music player',
-        caption: 'Main Player Interface with Waveform Visualization',
-        thumbnailUrl: 'https://placehold.co/300x200.png'
+        caption: 'Main Player Interface with Waveform Visualization'
       },
       {
         url: 'https://placehold.co/1280x720.png',
+        thumbnailUrl: 'https://placehold.co/300x200.png',
         hint: 'analytics dashboard',
-        caption: 'Artist Analytics Dashboard with Earnings Breakdown',
-        thumbnailUrl: 'https://placehold.co/300x200.png'
+        caption: 'Artist Analytics Dashboard with Earnings Breakdown'
       },
     ],
     liveDemoUrl: '#',
@@ -157,15 +337,15 @@ Key Features:
     screenshots: [
       {
         url: 'https://placehold.co/1280x720.png',
+        thumbnailUrl: 'https://placehold.co/300x200.png',
         hint: 'chat interface',
-        caption: 'Secure Messaging with Translation Options',
-        thumbnailUrl: 'https://placehold.co/300x200.png'
+        caption: 'Secure Messaging with Translation Options'
       },
       {
         url: 'https://placehold.co/1280x720.png',
+        thumbnailUrl: 'https://placehold.co/300x200.png',
         hint: 'event feed',
-        caption: 'Community Feed with Upcoming Events',
-        thumbnailUrl: 'https://placehold.co/300x200.png'
+        caption: 'Community Feed with Upcoming Events'
       },
     ],
     liveDemoUrl: '#',
@@ -212,15 +392,15 @@ Key Features:
     screenshots: [
       {
         url: 'https://placehold.co/1280x720.png',
+        thumbnailUrl: 'https://placehold.co/300x200.png',
         hint: 'download config',
-        caption: 'Download Configuration with Quality Options',
-        thumbnailUrl: 'https://placehold.co/300x200.png'
+        caption: 'Download Configuration with Quality Options'
       },
       {
         url: 'https://placehold.co/1280x720.png',
+        thumbnailUrl: 'https://placehold.co/300x200.png',
         hint: 'file browser',
-        caption: 'Organized Downloads by Channel and Date',
-        thumbnailUrl: 'https://placehold.co/300x200.png'
+        caption: 'Organized Downloads by Channel and Date'
       },
     ],
     liveDemoUrl: '#',
@@ -265,12 +445,15 @@ Key Features:
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'job platform',
     screenshots: [
-      { url: 'https://placehold.co/1280x720.png', hint: 'user profile', caption: 'User Profile & Verification', thumbnailUrl: 'https://placehold.co/300x200.png' },
-      { url: 'https://placehold.co/1280x720.png', hint: 'referral tracking', caption: 'Referral Status Dashboard', thumbnailUrl: 'https://placehold.co/300x200.png' },
+      { url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'user profile', caption: 'User Profile & Verification' },
+      { url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'referral tracking', caption: 'Referral Status Dashboard' },
     ],
     liveDemoUrl: '#',
     githubUrl: '#',
     category: 'Web Platform',
+    status: 'active',
+    createdAt: '2022-05-10',
+    updatedAt: '2023-01-20',
   },
   {
     id: 'reborn-pixels-portfolio',
@@ -289,12 +472,15 @@ Key Features:
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'photography gallery',
     screenshots: [
-      { url: 'https://placehold.co/1280x720.png', hint: 'photo showcase', caption: 'Main Gallery View', thumbnailUrl: 'https://placehold.co/300x200.png' },
-      { url: 'https://placehold.co/1280x720.png', hint: 'image details', caption: 'EXIF Data Display', thumbnailUrl: 'https://placehold.co/300x200.png' },
+      { url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'photo showcase', caption: 'Main Gallery View' },
+      { url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'image details', caption: 'EXIF Data Display' },
     ],
     liveDemoUrl: '#',
     githubUrl: '#',
     category: 'Photography Portfolio',
+    status: 'active',
+    createdAt: '2021-10-01',
+    updatedAt: '2022-08-15',
   },
   {
     id: 'windows-of-hope-npo-platform',
@@ -313,12 +499,15 @@ Key Features:
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'nonprofit dashboard',
     screenshots: [
-      { url: 'https://placehold.co/1280x720.png', hint: 'donor management', caption: 'Donor Management Interface', thumbnailUrl: 'https://placehold.co/300x200.png' },
-      { url: 'https://placehold.co/1280x720.png', hint: 'campaign stats', caption: 'Campaign Impact Analytics', thumbnailUrl: 'https://placehold.co/300x200.png' },
+      { url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'donor management', caption: 'Donor Management Interface' },
+      { url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'campaign stats', caption: 'Campaign Impact Analytics' },
     ],
     liveDemoUrl: '#',
     githubUrl: '#',
     category: 'Web Platform',
+    status: 'active',
+    createdAt: '2022-01-20',
+    updatedAt: '2022-12-05',
   },
   {
     id: 'instagram-nonfollowers-checker-tool',
@@ -337,12 +526,15 @@ Key Features:
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'follower analysis',
     screenshots: [
-      { url: 'https://placehold.co/1280x720.png', hint: 'data import', caption: 'Data Import Screen', thumbnailUrl: 'https://placehold.co/300x200.png' },
-      { url: 'https://placehold.co/1280x720.png', hint: 'analysis results', caption: 'Follower Analysis Results', thumbnailUrl: 'https://placehold.co/300x200.png' },
+      { url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'data import', caption: 'Data Import Screen' },
+      { url: 'https://placehold.co/1280x720.png', thumbnailUrl: 'https://placehold.co/300x200.png', hint: 'analysis results', caption: 'Follower Analysis Results' },
     ],
     liveDemoUrl: '#',
     githubUrl: '#',
     category: 'Utility Tool',
+    status: 'active',
+    createdAt: '2021-08-10',
+    updatedAt: '2022-04-01',
   },
 ];
 
